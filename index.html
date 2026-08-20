@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI DOC</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-gradient-to-r from-blue-950 via-indigo-900 to-slate-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-500 text-slate-950 p-2.5 rounded-xl shadow-md font-extrabold text-xl">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div>
+                    <!-- Header Branding -->
+                    <div class="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
+                        <span>AI DOC</span>
+                        <span class="bg-emerald-600 text-white text-[10px] px-1.5 py-0.2 rounded">GitHub Pages Ready</span>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-wide">IAMBUMMY Portal</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <div class="text-right hidden sm:block">
+                    <div class="text-xs text-blue-300 font-medium">เวลาปัจจุบันในระบบ</div>
+                    <div id="liveClock" class="text-sm font-semibold text-amber-400 font-mono">--:--:--</div>
+                </div>
+
+                <!-- Top System Reset / Refresh Button -->
+                <button onclick="resetSystemState()" title="ล้างค่ากลับสู่หน้าเริ่มต้น" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-3 py-2 rounded-lg text-xs border border-slate-700 shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrows-rotate text-amber-400"></i>
+                    <span>รีเซ็ตระบบ (Reset)</span>
+                </button>
+
+                <button onclick="openUploadModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm shadow-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>+ อัปโหลดไฟล์ (Add File)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- Stat Cards & Category Breakdown Dropdown Bar -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase">เอกสารทั้งหมด</div>
+                    <div id="statTotalDocs" class="text-2xl font-bold text-blue-900 mt-1">0</div>
+                    <div class="text-xs text-slate-400 mt-1">พร้อมระบบวิเคราะห์เชิงลึก</div>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <div class="text-xs font-semibold text-slate-500 uppercase">จำนวนหมวดหมู่เอกสาร</div>
+                    <div id="statCategories" class="text-2xl font-bold text-indigo-900 mt-1">0</div>
+                    <div class="text-xs text-slate-400 mt-1">รองรับ Multi-Category</div>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+            </div>
+
+            <!-- Dashboard Category Breakdown Dropdown Selector -->
+            <div class="md:col-span-2 glass-card p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                <label class="text-xs font-bold text-slate-700 uppercase mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-layer-group text-indigo-600"></i>
+                    <span>จำนวนเอกสารในแต่ละหมวดหมู่ (Category Breakdown Dropdown):</span>
+                </label>
+                <select id="statCategoryDropdown" onchange="onDashboardCategorySelect(this.value)" class="w-full py-2 px-3 text-xs bg-slate-50 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-slate-800">
+                    <option value="">-- เลือกดูจำนวนเอกสารแยกตามหมวดหมู่ --</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-slate-300 mb-6 space-x-2 overflow-x-auto">
+            <button onclick="switchTab('docs')" id="tabBtnDocs" class="py-3 px-5 text-sm font-semibold text-blue-900 border-b-2 border-blue-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <span>คลังเอกสาร & สรุปวิเคราะห์เชิงลึก</span>
+            </button>
+            <button onclick="switchTab('ai')" id="tabBtnAi" class="py-3 px-5 text-sm font-semibold text-slate-600 hover:text-blue-900 border-b-2 border-transparent hover:border-slate-400 flex items-center gap-2 transition">
+                <i class="fa-solid fa-robot text-amber-500"></i>
+                <span>AI Query Assistant (สอบถามข้อมูล)</span>
+            </button>
+            <button onclick="switchTab('logs')" id="tabBtnLogs" class="py-3 px-5 text-sm font-semibold text-slate-600 hover:text-blue-900 border-b-2 border-transparent hover:border-slate-400 flex items-center gap-2 transition">
+                <i class="fa-solid fa-list-check"></i>
+                <span>บันทึกกิจกรรม (Audit Logs)</span>
+            </button>
+            <button onclick="switchTab('exports')" id="tabBtnExports" class="py-3 px-5 text-sm font-semibold text-slate-600 hover:text-blue-900 border-b-2 border-transparent hover:border-slate-400 flex items-center gap-2 transition">
+                <i class="fa-solid fa-file-arrow-down text-emerald-600"></i>
+                <span>ศูนย์ส่งออกรายงานเลือกได้ (Selective Export)</span>
+            </button>
+        </div>
+
+        <!-- TAB 1: DOCUMENTS & DETAILED SUMMARIES -->
+        <section id="tabDocs" class="space-y-6">
+            <!-- Search & Cascading Filter Toolbar -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" oninput="debounceSearch()" placeholder="สืบค้นชื่อเอกสาร, สรุป, คำสำคัญ..." class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+
+                <!-- Cascading Dropdowns: Category Filter (with counts) + Dependent Document Title Filter -->
+                <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
+                    <!-- Dropdown 1: Category Filter with (Count) -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-semibold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-filter text-slate-400"></i> หมวดหมู่:</label>
+                        <select id="categoryFilter" onchange="onCategoryFilterChange()" class="py-2 px-3 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium">
+                            <option value="">-- แสดงทุกหมวดหมู่ --</option>
+                        </select>
+                    </div>
+
+                    <!-- Cascading Document Title Dropdown dependent on Category -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-semibold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-file-lines text-slate-400"></i> ชื่อเอกสาร:</label>
+                        <select id="docTitleFilter" onchange="renderApp()" class="py-2 px-3 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium max-w-xs truncate">
+                            <option value="">-- แสดงทุกชื่อเอกสาร --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Cards Grid -->
+            <div id="docsGrid" class="grid grid-cols-1 gap-6">
+                <!-- Dynamic Content Loaded via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 2: AI QUERY ASSISTANT -->
+        <section id="tabAi" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">AI Function สอบถามและวิเคราะห์ข้อมูล</h2>
+                            <p class="text-xs text-slate-500">สอบถามข้อซักถามจากเนื้อหาเอกสารทั้งหมด ระบบจะประมวลผลพร้อมแสดงแหล่งที่มา (Source Citation)</p>
+                        </div>
+                    </div>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full"><i class="fa-solid fa-shield-halved"></i> Standalone RAG Engine Active</span>
+                </div>
+
+                <!-- Prompt suggestion chips -->
+                <div>
+                    <div class="text-xs font-semibold text-slate-500 mb-2">คำถามแนะนำที่พบบ่อย (Quick Prompts):</div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setPrompt('สรุปสัดส่วนงบประมาณโครงการ 50 ล้านบาท')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition">💰 สรุปงบประมาณโครงการ 50 ล้านบาท</button>
+                        <button onclick="setPrompt('รายละเอียดสถาปัตยกรรม GDCC Cloud และทรัพยากรที่ต้องใช้')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition">☁️ สถาปัตยกรรม GDCC Cloud</button>
+                        <button onclick="setPrompt('ข้อตกลงและบทบาทหน้าที่ภาคี 4 ฝ่าย ตาม MOU')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition">🤝 MOU ข้อตกลงภาคี 4 ฝ่าย</button>
+                        <button onclick="setPrompt('สถาปัตยกรรมระบบ 3 Pillars (ทศกัณฐ์, เบญจรงค์, Staff App)')" class="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition">🏗️ สถาปัตยกรรม 3 Pillars</button>
+                    </div>
+                </div>
+
+                <!-- AI Response Output Box -->
+                <div class="relative">
+                    <div id="aiResponseBox" class="bg-slate-50 p-5 rounded-xl border border-slate-200 min-h-[160px] text-sm leading-relaxed text-slate-800 whitespace-pre-line">
+                        <span class="text-slate-400 italic">พิมพ์คำถามของคุณด้านล่าง แล้วกดปุ่ม "ส่งคำถาม AI" เพื่อประมวลผลคำตอบ...</span>
+                    </div>
+
+                    <!-- AI Query Response Export Buttons in Tab 2 -->
+                    <div id="aiExportBar" class="hidden mt-3 p-3 bg-blue-50/70 border border-blue-200 rounded-xl flex flex-wrap items-center justify-between gap-3">
+                        <span class="text-xs font-bold text-blue-900"><i class="fa-solid fa-file-export text-blue-700"></i> ส่งออกคำตอบและรายการที่สอบถามนี้:</span>
+                        <div class="flex gap-2">
+                            <button onclick="exportAiResponseClient('txt')" class="text-xs font-semibold bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded shadow transition flex items-center gap-1">
+                                <i class="fa-solid fa-file-lines"></i> ดาวน์โหลด TXT
+                            </button>
+                            <button onclick="exportAiResponseClient('doc')" class="text-xs font-semibold bg-indigo-700 hover:bg-indigo-800 text-white px-3 py-1.5 rounded shadow transition flex items-center gap-1">
+                                <i class="fa-solid fa-file-word"></i> ดาวน์โหลด DOC
+                            </button>
+                            <button onclick="exportAiResponseClient('html')" class="text-xs font-semibold bg-rose-700 hover:bg-rose-800 text-white px-3 py-1.5 rounded shadow transition flex items-center gap-1">
+                                <i class="fa-solid fa-file-code"></i> สั่งพิมพ์ / PDF (HTML)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Citations Cards Area -->
+                <div id="aiCitationsBox" class="hidden">
+                    <div class="text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider"><i class="fa-solid fa-link text-blue-600"></i> แหล่งที่มาอ้างอิงของข้อมูล (Source References):</div>
+                    <div id="citationsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- Input Box -->
+                <div class="flex gap-3">
+                    <textarea id="aiPromptInput" rows="2" placeholder="พิมพ์คำถามที่ต้องการค้นหาหรือวิเคราะห์เกี่ยวกับเอกสารในโครงการ..." class="flex-grow p-3 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"></textarea>
+                    <button onclick="submitAiQueryClient()" id="btnAiSubmit" class="bg-blue-950 hover:bg-blue-900 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition flex flex-col items-center justify-center min-w-[120px]">
+                        <i class="fa-solid fa-paper-plane text-lg mb-1"></i>
+                        <span class="text-xs">ส่งคำถาม AI</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: AUDIT LOGS -->
+        <section id="tabLogs" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">บันทึกกิจกรรมในระบบ (System Audit Logs)</h2>
+                        <p class="text-xs text-slate-500">เก็บบันทึกประวัติการเพิ่ม/ลบไฟล์, การวิเคราะห์สรุป, การดาวน์โหลด, การสอบถาม AI และการส่งออกรายงาน</p>
+                    </div>
+                    <button onclick="clearSystemLogsClient()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium px-3 py-1.5 rounded-lg border border-rose-200 transition">
+                        <i class="fa-solid fa-trash-can"></i> ล้าง Log
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                                <th class="p-3">วันเวลา (Timestamp)</th>
+                                <th class="p-3">กิจกรรม (Action)</th>
+                                <th class="p-3">รายละเอียด (Details)</th>
+                                <th class="p-3">ผู้ดำเนินการ</th>
+                                <th class="p-3 text-center">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTbody" class="divide-y divide-slate-200">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: SELECTIVE EXPORT CENTER -->
+        <section id="tabExports" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">ศูนย์ส่งออกรายงานเลือกได้ (Selective Custom Export Center)</h2>
+                    <p class="text-xs text-slate-500">เลือกหมวดหมู่หรือเลือกเอกสารเฉพาะเรื่องที่ต้องการ (สามารถเลือกมากกว่า 1 รายการ หรือเลือกทั้งหมดได้) เพื่อสร้างรายงานภาษาไทย</p>
+                </div>
+
+                <!-- Document Multi-selection Box -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700 uppercase"><i class="fa-solid fa-check-double text-blue-600"></i> เลือกเอกสารที่ต้องการรวมในรายงาน:</span>
+                        <div class="space-x-2 text-xs">
+                            <button onclick="selectAllExportDocs(true)" class="text-blue-700 hover:underline font-semibold">เลือกทั้งหมด (Select All)</button>
+                            <span class="text-slate-300">|</span>
+                            <button onclick="selectAllExportDocs(false)" class="text-slate-500 hover:underline">ยกเลิกทั้งหมด (Deselect All)</button>
+                        </div>
+                    </div>
+
+                    <div id="exportDocSelectorContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-60 overflow-y-auto p-1 bg-white rounded-lg border border-slate-200">
+                        <!-- Checkboxes generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Export Format Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Word DOC Card -->
+                    <div class="border border-blue-200 rounded-xl p-5 bg-gradient-to-b from-blue-50 to-white hover:shadow-md transition text-center space-y-4">
+                        <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-solid fa-file-word"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Microsoft Word (.doc)</h3>
+                            <p class="text-xs text-slate-500 mt-1">รายงานฉบับสมบูรณ์ พร้อมบทบาทผู้มีส่วนเกี่ยวข้อง ตารางกรอบเวลา และมุมมองผู้เชี่ยวชาญ 6 ด้าน</p>
+                        </div>
+                        <button onclick="exportCustomClient('doc')" class="w-full py-2.5 bg-blue-800 hover:bg-blue-900 text-white text-xs font-semibold rounded-lg shadow transition">
+                            <i class="fa-solid fa-download"></i> ดาวน์โหลด .DOC (ที่เลือก)
+                        </button>
+                    </div>
+
+                    <!-- PDF / Print HTML Card -->
+                    <div class="border border-rose-200 rounded-xl p-5 bg-gradient-to-b from-rose-50 to-white hover:shadow-md transition text-center space-y-4">
+                        <div class="w-14 h-14 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Print / Save as PDF (.pdf)</h3>
+                            <p class="text-xs text-slate-500 mt-1">เปิดรายงานหน้าพิมพ์สรุปผู้บริหารภาษาไทย สามารถสั่งพิมพ์หรือบันทึกเป็น PDF ได้ทันที</p>
+                        </div>
+                        <button onclick="exportCustomClient('pdf')" class="w-full py-2.5 bg-rose-800 hover:bg-rose-900 text-white text-xs font-semibold rounded-lg shadow transition">
+                            <i class="fa-solid fa-print"></i> พิมพ์ / บันทึก PDF (ที่เลือก)
+                        </button>
+                    </div>
+
+                    <!-- Text Summary Package Card -->
+                    <div class="border border-amber-200 rounded-xl p-5 bg-gradient-to-b from-amber-50 to-white hover:shadow-md transition text-center space-y-4">
+                        <div class="w-14 h-14 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Text Summary Package (.txt)</h3>
+                            <p class="text-xs text-slate-500 mt-1">แพ็กเกจข้อความสรุปวิเคราะห์ภาษาไทยรวมทุกฉบับที่เลือกไว้ในไฟล์เดียว</p>
+                        </div>
+                        <button onclick="exportCustomClient('txt')" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold text-xs rounded-lg shadow transition">
+                            <i class="fa-solid fa-download"></i> ดาวน์โหลด .TXT (ที่เลือก)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Upload Modal Dialog -->
+    <div id="uploadModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-200">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <h3 class="font-bold text-slate-900 text-base"><i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> เพิ่มไฟล์เอกสารใหม่ (Add File)</h3>
+                <button onclick="closeUploadModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <form id="uploadForm" onsubmit="handleUploadSubmitClient(event)" class="space-y-4">
+                <div class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-6 text-center bg-slate-50 cursor-pointer" onclick="document.getElementById('fileInput').click()">
+                    <i class="fa-solid fa-file-pdf text-4xl text-rose-500 mb-2"></i>
+                    <p class="text-xs font-semibold text-slate-700">คลิกเพื่อเลือกไฟล์เอกสาร (.pdf, .txt, .docx)</p>
+                    <p id="fileNameDisplay" class="text-xs text-blue-600 font-mono mt-2 truncate font-semibold"></p>
+                    <input type="file" id="fileInput" required class="hidden" onchange="document.getElementById('fileNameDisplay').innerText = this.files[0] ? this.files[0].name : ''">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeUploadModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">ยกเลิก</button>
+                    <button type="submit" id="btnSubmitUpload" class="px-5 py-2 text-xs font-semibold bg-blue-900 hover:bg-blue-800 text-white rounded-lg shadow">
+                        <i class="fa-solid fa-upload"></i> เพิ่มและวิเคราะห์ไฟล์
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-rose-100 text-center">
+            <div class="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-slate-900 text-base">ยืนยันการลบเอกสารออกจากระบบ</h3>
+                <p id="deleteModalTargetTitle" class="text-xs text-rose-700 font-semibold bg-rose-50 p-2 rounded border border-rose-200 mt-2 truncate"></p>
+                <p class="text-xs text-slate-500 mt-2">เมื่อทำการลบแล้ว ข้อมูลวิเคราะห์สรุป ประวัติ และดรรชนีสืบค้นของเอกสารนี้จะถูกนำออกจากคลังข้อมูลทันที</p>
+            </div>
+
+            <div class="flex justify-center gap-3 pt-2">
+                <button onclick="closeDeleteModal()" class="px-5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg">
+                    ยกเลิก (Cancel)
+                </button>
+                <button id="btnConfirmDeleteExec" class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow">
+                    <i class="fa-solid fa-trash-can"></i> ยืนยันลบเอกสาร (Confirm Delete)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Options Checklist Modal -->
+    <div id="downloadChecklistModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-amber-200">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-down text-amber-500"></i>
+                    <span>กำหนดรายการดาวน์โหลดเอกสาร (Download Checklist)</span>
+                </h3>
+                <button onclick="closeDownloadChecklistModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-3">
+                <p id="downloadTargetDocTitle" class="text-xs text-blue-900 font-bold bg-blue-50 p-2.5 rounded-lg border border-blue-200 truncate"></p>
+                <p class="text-xs text-slate-600">กรุณาเลือก checklist รายการที่คุณต้องการรวมในไฟล์ดาวน์โหลด:</p>
+
+                <div class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                    <label class="flex items-center gap-2.5 cursor-pointer font-semibold text-slate-800">
+                        <input type="checkbox" id="chkIncludeSummary" checked class="accent-amber-500 w-4 h-4">
+                        <span>[✓] หน้าสรุปวิเคราะห์เชิงลึก (Analysis Summary)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer font-semibold text-slate-800">
+                        <input type="checkbox" id="chkIncludeOriginal" checked class="accent-amber-500 w-4 h-4">
+                        <span>[✓] ไฟล์เอกสารหลักต้นฉบับ (Primary Original File)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer font-semibold text-slate-800">
+                        <input type="checkbox" id="chkIncludeRelated" class="accent-amber-500 w-4 h-4">
+                        <span>[ ] รายการเอกสารอื่นที่เกี่ยวข้องในเรื่องนี้ (Related Documents)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button onclick="closeDownloadChecklistModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">ยกเลิก</button>
+                <button onclick="executeClientCustomDownloadPackage()" class="px-5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg shadow">
+                    <i class="fa-solid fa-download"></i> ยืนยันดาวน์โหลด (Download)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Preview Modal / Window -->
+    <div id="docPreviewModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-slate-200 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-blue-950 to-indigo-900 text-white p-5 flex justify-between items-start gap-4 shadow">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1.5" id="previewCatBadges">
+                        <!-- Dynamic Category Badges -->
+                    </div>
+                    <h2 class="text-lg font-bold text-white" id="previewDocTitle">ชื่อเอกสาร...</h2>
+                    <p class="text-xs text-blue-200 mt-0.5" id="previewDocSub">แหล่งที่มา: ...</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <!-- Download Button in Modal Header opens Download Checklist Modal -->
+                    <button id="previewHeaderDownloadBtn" onclick="" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-download"></i> ดาวน์โหลด (Download)
+                    </button>
+                    <!-- Close Button in Modal Header -->
+                    <button onclick="closeDocPreviewModal()" class="text-blue-200 hover:text-white bg-blue-900/60 p-1.5 rounded-lg text-lg transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Content Body (Scrollable) -->
+            <div class="p-6 overflow-y-auto flex-grow space-y-5 text-slate-800 text-xs leading-relaxed" id="previewModalBody">
+                <!-- Dynamic Content injected via JS -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-100 p-4 border-t border-slate-200 flex justify-between items-center">
+                <span class="text-xs text-slate-500" id="previewTimestamp">วิเคราะห์เมื่อ: --:--:--</span>
+                <div class="flex gap-2">
+                    <button id="previewFooterDownloadBtn" onclick="" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-download"></i> ดาวน์โหลดเอกสาร (Download)
+                    </button>
+                    <button onclick="closeDocPreviewModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold px-4 py-2 rounded-lg text-xs transition">
+                        ✕ ปิดหน้าต่าง (Close)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 border-t border-slate-800 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            IAMBUMMY AI DOC &copy; 2026 | Standalone Client-Side Application
+        </div>
+    </footer>
+
+    <!-- Standalone Client-Side Application Logic (Embedded for 100% GitHub Pages Compatibility) -->
+    <script>
+        // Initial Empty Knowledge Base (0 Documents - Ready for fresh user uploads)
+        const INITIAL_DOCUMENTS = [];
+
+        // State Management with LocalStorage
+        let documentsList = [];
+        let systemLogs = [];
+        let pendingDeleteDocId = null;
+        let pendingDownloadDocId = null;
+        let lastAiResponseData = null;
+        let searchTimer = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initData();
+            startClock();
+            renderApp();
+        });
+
+        function initData() {
+            // Force reset to empty list so system is completely clean
+            const savedDocs = localStorage.getItem('iambummy_docs');
+            if (savedDocs) {
+                try { documentsList = JSON.parse(savedDocs); } catch(e) { documentsList = []; }
+            } else {
+                documentsList = [];
+                saveDocsToStorage();
+            }
+
+            const savedLogs = localStorage.getItem('iambummy_logs');
+            if (savedLogs) {
+                try { systemLogs = JSON.parse(savedLogs); } catch(e) { initDefaultLogs(); }
+            } else {
+                initDefaultLogs();
+            }
+        }
+
+        function initDefaultLogs() {
+            const now = new Date();
+            const nowStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+            systemLogs = [
+                { id: "log-001", timestamp: nowStr, action: "SYSTEM_INIT", details: "เปิดใช้งานระบบ IAMBUMMY AI DOC Standalone Version บน GitHub Pages", user: "System Admin", status: "SUCCESS" },
+                { id: "log-002", timestamp: nowStr, action: "CLEAR_DOCUMENTS", details: "ลบเอกสารเริ่มต้นทั้งหมดในระบบเรียบร้อยแล้ว พร้อมรองรับการอัปโหลดไฟล์ใหม่", user: "System Admin", status: "SUCCESS" }
+            ];
+            saveLogsToStorage();
+        }
+
+        function saveDocsToStorage() {
+            localStorage.setItem('iambummy_docs', JSON.stringify(documentsList));
+        }
+
+        function saveLogsToStorage() {
+            localStorage.setItem('iambummy_logs', JSON.stringify(systemLogs));
+        }
+
+        function addLog(action, details) {
+            const now = new Date();
+            const nowStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+            systemLogs.unshift({
+                id: 'log-' + String(systemLogs.length + 1).padStart(3, '0'),
+                timestamp: nowStr,
+                action: action,
+                details: details,
+                user: "Client User",
+                status: "SUCCESS"
+            });
+            saveLogsToStorage();
+            renderLogsTable();
+        }
+
+        function startClock() {
+            function updateClock() {
+                const now = new Date();
+                const str = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('liveClock').innerText = str;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function resetSystemState() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('docTitleFilter').value = '';
+            document.getElementById('statCategoryDropdown').value = '';
+            switchTab('docs');
+            renderApp();
+            addLog("SYSTEM_RESET", "รีเซ็ตตัวกรองและล้างค่ากลับสู่หน้าเริ่มต้น");
+        }
+
+        function switchTab(tabName) {
+            ['docs', 'ai', 'logs', 'exports'].forEach(t => {
+                const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                const sec = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if (t === tabName) {
+                    sec.classList.remove('hidden');
+                    btn.classList.add('text-blue-900', 'border-blue-800');
+                    btn.classList.remove('text-slate-600', 'border-transparent');
+                } else {
+                    sec.classList.add('hidden');
+                    btn.classList.remove('text-blue-900', 'border-blue-800');
+                    btn.classList.add('text-slate-600', 'border-transparent');
+                }
+            });
+
+            if (tabName === 'logs') renderLogsTable();
+            if (tabName === 'exports') renderExportDocSelectors();
+        }
+
+        function getFilteredDocuments() {
+            const q = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
+            const cat = document.getElementById('categoryFilter')?.value || '';
+            const titleFilter = document.getElementById('docTitleFilter')?.value || '';
+
+            return documentsList.filter(doc => {
+                const docCats = doc.categories || [doc.category];
+                if (cat && !docCats.includes(cat)) return false;
+                if (titleFilter && doc.title !== titleFilter) return false;
+                if (q) {
+                    const text = `${doc.title} ${doc.summary} ${doc.source_agency} ${docCats.join(' ')}`.toLowerCase();
+                    return q.split(' ').every(kw => text.includes(kw));
+                }
+                return true;
+            });
+        }
+
+        function renderApp() {
+            const filteredDocs = getFilteredDocuments();
+            renderDocumentsGrid(filteredDocs);
+            updateDashboardStats();
+            updateCategoryFilterDropdown();
+            updateDocTitleFilterDropdown();
+            renderExportDocSelectors();
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('statTotalDocs').innerText = documentsList.length;
+
+            const catCounts = {};
+            documentsList.forEach(d => {
+                (d.categories || [d.category]).forEach(c => { if(c) catCounts[c] = (catCounts[c] || 0) + 1; });
+            });
+
+            const uniqueCats = Object.keys(catCounts);
+            document.getElementById('statCategories').innerText = uniqueCats.length;
+
+            const statDropdown = document.getElementById('statCategoryDropdown');
+            if (statDropdown) {
+                const current = statDropdown.value;
+                statDropdown.innerHTML = '<option value="">-- เลือกดูจำนวนเอกสารแยกตามหมวดหมู่ --</option>';
+                uniqueCats.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.innerText = `${c} (${catCounts[c]} เอกสาร)`;
+                    if (c === current) opt.selected = true;
+                    statDropdown.appendChild(opt);
+                });
+            }
+        }
+
+        function onDashboardCategorySelect(catVal) {
+            document.getElementById('categoryFilter').value = catVal;
+            onCategoryFilterChange();
+        }
+
+        function updateCategoryFilterDropdown() {
+            const dropdown = document.getElementById('categoryFilter');
+            if (!dropdown) return;
+
+            const current = dropdown.value;
+            const catCounts = {};
+
+            documentsList.forEach(d => {
+                (d.categories || [d.category]).forEach(c => { if(c) catCounts[c] = (catCounts[c] || 0) + 1; });
+            });
+
+            dropdown.innerHTML = '<option value="">-- แสดงทุกหมวดหมู่ --</option>';
+            Object.keys(catCounts).forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.innerText = `${c} (${catCounts[c]})`;
+                if (c === current) opt.selected = true;
+                dropdown.appendChild(opt);
+            });
+        }
+
+        function onCategoryFilterChange() {
+            updateDocTitleFilterDropdown();
+            document.getElementById('docTitleFilter').value = '';
+            renderApp();
+        }
+
+        function updateDocTitleFilterDropdown() {
+            const dropdown = document.getElementById('docTitleFilter');
+            if (!dropdown) return;
+
+            const selectedCat = document.getElementById('categoryFilter')?.value || '';
+            const current = dropdown.value;
+
+            dropdown.innerHTML = '<option value="">-- แสดงทุกชื่อเอกสาร --</option>';
+            documentsList.forEach(d => {
+                const cats = d.categories || [d.category];
+                if (!selectedCat || cats.includes(selectedCat)) {
+                    const opt = document.createElement('option');
+                    opt.value = d.title;
+                    opt.innerText = d.title;
+                    if (d.title === current) opt.selected = true;
+                    dropdown.appendChild(opt);
+                }
+            });
+        }
+
+        function renderDocumentsGrid(docs) {
+            const container = document.getElementById('docsGrid');
+            if (!container) return;
+
+            if (docs.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-12 text-center rounded-xl border border-slate-200 text-slate-500 space-y-3">
+                        <i class="fa-solid fa-folder-open text-5xl text-slate-300"></i>
+                        <h3 class="font-bold text-slate-700 text-base">ยังไม่มีเอกสารในคลังข้อมูล (0 เอกสาร)</h3>
+                        <p class="text-xs text-slate-500 max-w-md mx-auto">ขณะนี้เอกสารเริ่มต้นทั้งหมดถูกลบออกแล้ว คุณสามารถอัปโหลดไฟล์เอกสารใหม่เข้าสู่ระบบได้ทันทีโดยคลิกปุ่มด้านล่าง</p>
+                        <button onclick="openUploadModal()" class="mt-2 inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs shadow transition">
+                            <i class="fa-solid fa-file-circle-plus"></i> + อัปโหลดเอกสารใหม่ (Add File)
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = docs.map(d => {
+                const cats = d.categories || [d.category];
+                const catBadges = cats.map(c => `<span class="text-xs font-semibold px-2.5 py-0.5 rounded-full border bg-blue-50 text-blue-800 border-blue-200"><i class="fa-solid fa-tag text-[10px]"></i> ${c}</span>`).join(' ');
+
+                return `
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4 hover:shadow-md transition">
+                        <div class="flex flex-col md:flex-row justify-between md:items-start gap-3 border-b border-slate-100 pb-3">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                    ${catBadges}
+                                    <button onclick="openDocPreview('${d.id}')" class="text-[11px] font-mono text-slate-500 hover:text-blue-700 bg-slate-100 px-2 py-0.5 rounded transition">
+                                        <i class="fa-solid fa-file-pdf text-rose-500"></i> ${d.filename} <i class="fa-solid fa-eye text-blue-600 ml-1"></i>
+                                    </button>
+                                </div>
+                                <h3 onclick="openDocPreview('${d.id}')" class="text-base font-bold text-slate-900 hover:text-blue-700 cursor-pointer transition flex items-center gap-2">
+                                    <span>${d.title}</span>
+                                    <span class="text-xs bg-blue-50 text-blue-700 font-normal px-2 py-0.5 rounded-full border border-blue-200"><i class="fa-solid fa-expand text-[10px]"></i> Preview</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    <i class="fa-solid fa-building-columns text-slate-400"></i> แหล่งที่มา: <span class="font-medium text-slate-700">${d.source_agency}</span>
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col md:items-end gap-2">
+                                <div class="text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1.5 whitespace-nowrap">
+                                    <i class="fa-solid fa-clock-check text-emerald-600"></i>
+                                    <span>วิเคราะห์เมื่อ: ${d.analyzed_at}</span>
+                                </div>
+                                <button onclick="openDownloadChecklistModal('${d.id}')" class="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5 w-full md:w-auto justify-center">
+                                    <i class="fa-solid fa-download"></i> ดาวน์โหลดเอกสาร (Download)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="text-xs font-bold text-slate-700 mb-1 uppercase"><i class="fa-solid fa-align-left text-blue-600"></i> สรุปสาระสำคัญ (Analyze Summary):</div>
+                            <p class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                ${d.summary}
+                            </p>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                            <div class="flex gap-2">
+                                <button onclick="openDocPreview('${d.id}')" class="text-xs font-semibold text-indigo-700 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-eye"></i> เปิดดูเอกสาร Preview
+                                </button>
+                            </div>
+                            <button onclick="openDeleteModal('${d.id}', '${d.title}')" class="text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                                <i class="fa-solid fa-trash"></i> ลบเอกสาร (Remove)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function debounceSearch() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(renderApp, 300);
+        }
+
+        function openDocPreview(docId) {
+            const doc = documentsList.find(d => d.id === docId);
+            if (!doc) return;
+
+            document.getElementById('previewDocTitle').innerText = doc.title;
+            document.getElementById('previewDocSub').innerText = `แหล่งที่มา: ${doc.source_agency} | ไฟล์: ${doc.filename}`;
+            document.getElementById('previewTimestamp').innerText = `วิเคราะห์เมื่อ: ${doc.analyzed_at}`;
+
+            document.getElementById('previewHeaderDownloadBtn').onclick = () => { closeDocPreviewModal(); openDownloadChecklistModal(doc.id); };
+            document.getElementById('previewFooterDownloadBtn').onclick = () => { closeDocPreviewModal(); openDownloadChecklistModal(doc.id); };
+
+            const cats = doc.categories || [doc.category];
+            document.getElementById('previewCatBadges').innerHTML = cats.map(c => `<span class="text-xs bg-amber-400 text-slate-950 font-bold px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-tag"></i> ${c}</span>`).join(' ');
+
+            const ea = doc.expert_analysis || {};
+
+            const stakeholdersHtml = (doc.stakeholders || []).map(s => `
+                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
+                    <span class="font-bold text-blue-900">${s.rank || ''}. ${s.name}</span>
+                    <span class="text-slate-500">(${s.role})</span>
+                    <p class="text-slate-600 mt-1">${s.responsibility}</p>
+                </div>
+            `).join('');
+
+            const timelineHtml = (doc.timeline || []).map(t => `
+                <tr class="hover:bg-slate-50 text-xs">
+                    <td class="p-2 border border-slate-200 font-semibold text-slate-800">${t.topic}</td>
+                    <td class="p-2 border border-slate-200 text-slate-600">${t.stakeholders}</td>
+                    <td class="p-2 border border-slate-200 font-mono text-emerald-700 font-bold">${t.timeframe}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('previewModalBody').innerHTML = `
+                <div class="space-y-5">
+                    <div class="border-b border-slate-200 pb-4 space-y-4">
+                        <div class="text-sm font-bold text-blue-950 uppercase border-b-2 border-blue-800 pb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-blue-700"></i> Part 1: ผลการวิเคราะห์สรุปเชิงลึก (Analysis Summary & Expert Panel)
+                        </div>
+
+                        <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-950 text-xs mb-1"><i class="fa-solid fa-align-left text-blue-700"></i> สรุปสาระสำคัญ (Analyze Summary):</h4>
+                            <p class="text-slate-800 leading-relaxed text-xs">${doc.summary}</p>
+                        </div>
+
+                        ${doc.stakeholders && doc.stakeholders.length > 0 ? `
+                            <div class="space-y-2">
+                                <h4 class="font-bold text-slate-900 text-xs"><i class="fa-solid fa-users-gear text-blue-700"></i> ผู้มีส่วนเกี่ยวข้องและบทบาทหน้าที่:</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${stakeholdersHtml}</div>
+                            </div>
+                        ` : ''}
+
+                        ${doc.timeline && doc.timeline.length > 0 ? `
+                            <div class="space-y-2">
+                                <h4 class="font-bold text-slate-900 text-xs"><i class="fa-solid fa-calendar-check text-emerald-700"></i> กรอบระยะเวลาและผู้รับผิดชอบ:</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse bg-white rounded-lg border border-slate-200">
+                                        <thead>
+                                            <tr class="bg-slate-100 text-slate-700 font-bold text-xs">
+                                                <th class="p-2 border border-slate-200">เรื่อง / กิจกรรม</th>
+                                                <th class="p-2 border border-slate-200">ผู้มีส่วนเกี่ยวข้อง</th>
+                                                <th class="p-2 border border-slate-200">กรอบเวลา</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>${timelineHtml}</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${ea.business ? `
+                            <div class="bg-indigo-50/70 p-4 rounded-xl border border-indigo-200 space-y-3">
+                                <h4 class="font-bold text-indigo-950 text-xs border-b border-indigo-200 pb-2"><i class="fa-solid fa-user-tie text-indigo-700"></i> มุมมองวิเคราะห์โดยผู้เชี่ยวชาญ 6 ด้าน:</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-blue-900">💼 ด้านธุรกิจ:</span> <p class="mt-1">${ea.business}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-purple-900">⚖️ ด้านกฎหมาย:</span> <p class="mt-1">${ea.legal}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-emerald-900">💰 ด้านการลงทุน:</span> <p class="mt-1">${ea.investor}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-sky-900">💻 ด้านไอที:</span> <p class="mt-1">${ea.it}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-amber-900">🎯 ด้านกลยุทธ์:</span> <p class="mt-1">${ea.strategy}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-teal-900">📊 ด้านเศรษฐศาสตร์:</span> <p class="mt-1">${ea.economics}</p></div>
+                                </div>
+                                ${ea.recommendations ? `<div class="bg-amber-100 p-2.5 rounded-lg border border-amber-300 font-medium text-xs">💡 <strong>ข้อแนะนำเพิ่มเติม:</strong> ${ea.recommendations}</div>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="text-sm font-bold text-emerald-950 uppercase border-b-2 border-emerald-700 pb-1 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-rose-600"></i> Part 2: เนื้อหาไฟล์ต้นฉบับ (Original File Content Preview)</span>
+                            <span class="text-xs text-slate-500 font-mono font-normal">ไฟล์: ${doc.filename}</span>
+                        </div>
+
+                        <div class="bg-slate-900 text-slate-200 p-4 rounded-xl border border-slate-800 font-mono text-xs leading-relaxed max-h-72 overflow-y-auto space-y-2">
+                            <p class="text-emerald-400 font-bold">--- ORIGINAL DOCUMENT DATA STREAM ---</p>
+                            <p class="text-slate-300">Document Title: ${doc.title}</p>
+                            <p class="text-slate-300">Source Agency: ${doc.source_agency}</p>
+                            <p class="text-slate-300">File Size: ${doc.file_size || 'N/A'}</p>
+                            <p class="text-slate-300">Categories: ${(doc.categories || []).join(' | ')}</p>
+                            <hr class="border-slate-800 my-2">
+                            <p class="text-slate-100 whitespace-pre-line">${doc.summary}</p>
+                            <p class="text-emerald-400 font-bold mt-2">--- END OF PREVIEW STREAM ---</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('docPreviewModal').classList.remove('hidden');
+            document.getElementById('docPreviewModal').classList.add('flex');
+        }
+
+        function closeDocPreviewModal() {
+            document.getElementById('docPreviewModal').classList.add('hidden');
+            document.getElementById('docPreviewModal').classList.remove('flex');
+        }
+
+        function openDownloadChecklistModal(docId) {
+            const doc = documentsList.find(d => d.id === docId);
+            if (!doc) return;
+
+            pendingDownloadDocId = docId;
+            document.getElementById('downloadTargetDocTitle').innerText = `${doc.title} (${doc.filename})`;
+
+            document.getElementById('downloadChecklistModal').classList.remove('hidden');
+            document.getElementById('downloadChecklistModal').classList.add('flex');
+        }
+
+        function closeDownloadChecklistModal() {
+            pendingDownloadDocId = null;
+            document.getElementById('downloadChecklistModal').classList.add('hidden');
+            document.getElementById('downloadChecklistModal').classList.remove('flex');
+        }
+
+        function executeClientCustomDownloadPackage() {
+            if (!pendingDownloadDocId) return;
+
+            const doc = documentsList.find(d => d.id === pendingDownloadDocId);
+            if (!doc) return;
+
+            const incSummary = document.getElementById('chkIncludeSummary').checked;
+            const incOriginal = document.getElementById('chkIncludeOriginal').checked;
+            const incRelated = document.getElementById('chkIncludeRelated').checked;
+
+            let out = [];
+            out.push("==========================================================================");
+            out.push("               IAMBUMMY AI DOC - CUSTOM DOCUMENT PACKAGE                   ");
+            out.push("==========================================================================");
+            out.push(`ชื่อเอกสาร: ${doc.title}`);
+            out.push(`ไฟล์: ${doc.filename}`);
+            out.push(`หมวดหมู่: ${(doc.categories || []).join(', ')}`);
+            out.push(`แหล่งที่มา: ${doc.source_agency}`);
+            out.push("--------------------------------------------------------------------------\n");
+
+            if (incSummary) {
+                out.push("[1] สรุปผลการวิเคราะห์เชิงลึก:");
+                out.push(`วิเคราะห์เมื่อ: ${doc.analyzed_at}`);
+                out.push(`สรุป: ${doc.summary}\n`);
+            }
+
+            if (incOriginal) {
+                out.push("[2] เนื้อหาเอกสารหลักต้นฉบับ:");
+                out.push(`ชื่อไฟล์: ${doc.filename} (ขนาด: ${doc.file_size || 'N/A'})\n`);
+            }
+
+            if (incRelated) {
+                const cats = new Set(doc.categories || []);
+                const related = documentsList.filter(d => d.id !== doc.id && (d.categories || []).some(c => cats.has(c)));
+                out.push(`[3] รายการเอกสารที่เกี่ยวข้องในหมวดหมู่เดียวกัน (${related.length} ฉบับ):`);
+                related.forEach(r => out.push(` • ${r.title} [${r.filename}]`));
+            }
+
+            downloadFileBlob(out.join('\n'), `iambummy_Package_${doc.id}.txt`, 'text/plain;charset=utf-8');
+            closeDownloadChecklistModal();
+            addLog("DOWNLOAD_CUSTOM", `ดาวน์โหลดแพ็กเกจเอกสาร '${doc.filename}'`);
+        }
+
+        function downloadFileBlob(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function openDeleteModal(docId, title) {
+            pendingDeleteDocId = docId;
+            document.getElementById('deleteModalTargetTitle').innerText = title;
+            const btn = document.getElementById('btnConfirmDeleteExec');
+            btn.onclick = () => executeDeleteDocumentClient(docId);
+
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+            document.getElementById('deleteConfirmModal').classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            pendingDeleteDocId = null;
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+            document.getElementById('deleteConfirmModal').classList.remove('flex');
+        }
+
+        function executeDeleteDocumentClient(docId) {
+            const doc = documentsList.find(d => d.id === docId);
+            if (!doc) return;
+
+            documentsList = documentsList.filter(d => d.id !== docId);
+            saveDocsToStorage();
+            closeDeleteModal();
+            renderApp();
+            addLog("REMOVE_FILE", `ลบเอกสาร '${doc.title}' (${doc.filename})`);
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+            document.getElementById('uploadModal').classList.add('flex');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadModal').classList.remove('flex');
+            document.getElementById('uploadForm').reset();
+            document.getElementById('fileNameDisplay').innerText = '';
+        }
+
+        function handleUploadSubmitClient(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files[0]) return;
+
+            const file = fileInput.files[0];
+            const now = new Date();
+            const nowStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+
+            const newDoc = {
+                id: 'doc-' + String(documentsList.length + 1).padStart(3, '0'),
+                filename: file.name,
+                title: file.name.replace('_', ' ').replace(/\.[^/.]+$/, ""),
+                categories: ["เอกสารอัปโหลดใหม่ (Uploaded Documents)"],
+                source_agency: "ไฟล์นำเข้าโดยผู้ใช้งาน",
+                analyzed_at: nowStr,
+                summary: `เอกสารใหม่ '${file.name}' นำเข้าสู่ระบบเรียบร้อยแล้วเมื่อ ${nowStr} พร้อมใช้งานสำหรับการสืบค้น วิเคราะห์ และสอบถาม AI`,
+                file_size: `${(file.size / 1024).toFixed(1)} KB`
+            };
+
+            documentsList.push(newDoc);
+            saveDocsToStorage();
+            closeUploadModal();
+            renderApp();
+            addLog("ADD_FILE", `นำเข้าไฟล์ใหม่ '${file.name}'`);
+        }
+
+        function setPrompt(txt) {
+            document.getElementById('aiPromptInput').value = txt;
+        }
+
+        function submitAiQueryClient() {
+            const prompt = document.getElementById('aiPromptInput').value.trim();
+            if (!prompt) return;
+
+            if (documentsList.length === 0) {
+                alert('ยังไม่มีเอกสารในระบบ กรุณาอัปโหลดเอกสารใหม่ก่อนทำการสอบถาม AI');
+                return;
+            }
+
+            const now = new Date();
+            const nowStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+
+            const pLower = prompt.toLowerCase();
+            const topMatches = documentsList.filter(d => {
+                const text = `${d.title} ${d.summary} ${d.source_agency}`.toLowerCase();
+                return pLower.split(' ').some(kw => kw.length > 1 && text.includes(kw));
+            }).slice(0, 3);
+
+            const finalMatches = topMatches.length > 0 ? topMatches : documentsList.slice(0, 2);
+
+            let ans = [`**การวิเคราะห์คำตอบจากคลังข้อมูล IAMBUMMY AI DOC (ณ เวลา ${nowStr}):**\n`];
+            ans.push(`จากการวิเคราะห์คำถาม '${prompt}' ระบบได้สกัดข้อมูลสำคัญจากเอกสารอ้างอิง ดังนี้:`);
+            finalMatches.forEach(m => ans.push(`• **${m.title}**: ${m.summary.slice(0, 160)}...`));
+
+            ans.push("\n📌 **แหล่งอ้างอิงข้อมูล (Source Citations):**");
+            finalMatches.forEach(m => ans.push(`- [${m.filename}] ${m.title} (${m.source_agency})`));
+
+            const responseText = ans.join('\n');
+            document.getElementById('aiResponseBox').innerText = responseText;
+
+            lastAiResponseData = { prompt: prompt, response: responseText, citations: finalMatches, timestamp: nowStr };
+
+            document.getElementById('aiExportBar').classList.remove('hidden');
+
+            const citationsBox = document.getElementById('aiCitationsBox');
+            const citationsContainer = document.getElementById('citationsContainer');
+            citationsBox.classList.remove('hidden');
+            citationsContainer.innerHTML = finalMatches.map(c => `
+                <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs shadow-sm space-y-1">
+                    <div class="font-bold text-blue-900 cursor-pointer hover:underline" onclick="openDocPreview('${c.id}')">${c.title}</div>
+                    <div class="text-slate-500 font-mono text-[11px]"><i class="fa-solid fa-file-pdf text-rose-500"></i> ${c.filename}</div>
+                    <div class="text-emerald-600 text-[10px] font-semibold"><i class="fa-solid fa-clock"></i> บันทึกเมื่อ: ${c.analyzed_at}</div>
+                </div>
+            `).join('');
+
+            addLog("AI_QUERY", `สอบถาม AI: '${prompt}'`);
+        }
+
+        function exportAiResponseClient(fmt) {
+            if (!lastAiResponseData) return;
+
+            const content = `IAMBUMMY AI DOC - AI Query Report\n\nคำถาม: ${lastAiResponseData.prompt}\nเวลา: ${lastAiResponseData.timestamp}\n\nคำตอบ:\n${lastAiResponseData.response}`;
+            if (fmt === 'txt' || fmt === 'doc') {
+                downloadFileBlob(content, `iambummy_AI_Query_Response.${fmt}`, 'text/plain;charset=utf-8');
+            } else {
+                window.print();
+            }
+            addLog("EXPORT_AI_QUERY", `ส่งออกคำตอบ AI เป็นไฟล์ .${fmt}`);
+        }
+
+        function renderExportDocSelectors() {
+            const container = document.getElementById('exportDocSelectorContainer');
+            if (!container) return;
+
+            if (documentsList.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 p-2 text-center">ยังไม่มีเอกสารในคลังข้อมูล</p>';
+                return;
+            }
+
+            container.innerHTML = documentsList.map(d => `
+                <label class="flex items-center gap-2 p-2 hover:bg-blue-50 rounded cursor-pointer transition text-xs">
+                    <input type="checkbox" value="${d.id}" class="export-doc-checkbox accent-blue-700 w-4 h-4" checked>
+                    <span class="font-semibold text-slate-800 truncate">${d.title}</span>
+                    <span class="text-[10px] text-slate-400 font-mono ml-auto">(${d.filename})</span>
+                </label>
+            `).join('');
+        }
+
+        function selectAllExportDocs(checked) {
+            document.querySelectorAll('.export-doc-checkbox').forEach(cb => cb.checked = checked);
+        }
+
+        function exportCustomClient(fmt) {
+            const cbs = document.querySelectorAll('.export-doc-checkbox:checked');
+            const selectedIds = Array.from(cbs).map(cb => cb.value);
+            if (selectedIds.length === 0) {
+                alert('กรุณาเลือกเอกสารอย่างน้อย 1 รายการ');
+                return;
+            }
+
+            const docs = documentsList.filter(d => selectedIds.includes(d.id));
+            let out = [];
+            out.push("==========================================================================");
+            out.push("               IAMBUMMY AI DOC - EXECUTIVE CUSTOM REPORT                   ");
+            out.push("==========================================================================");
+            out.push(`เอกสารที่เลือก: ${docs.length} รายการ\n`);
+
+            docs.forEach((d, i) => {
+                out.push(`${i+1}. ${d.title} [${d.filename}]`);
+                out.push(`   หมวดหมู่: ${(d.categories || []).join(', ')}`);
+                out.push(`   แหล่งที่มา: ${d.source_agency} | วิเคราะห์เมื่อ: ${d.analyzed_at}`);
+                out.push(`   สรุป: ${d.summary}\n`);
+            });
+
+            if (fmt === 'pdf') {
+                window.print();
+            } else {
+                downloadFileBlob(out.join('\n'), `iambummy_Custom_Report.${fmt}`, 'text/plain;charset=utf-8');
+            }
+            addLog("EXPORT_REPORT", `ส่งออกรายงานแบบกำหนดเอง (${docs.length} เอกสาร) เป็นไฟล์ .${fmt}`);
+        }
+
+        function renderLogsTable() {
+            const tbody = document.getElementById('logsTbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = systemLogs.map(l => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-3 font-mono text-slate-500 whitespace-nowrap">${l.timestamp}</td>
+                    <td class="p-3 font-semibold text-blue-900">${l.action}</td>
+                    <td class="p-3 text-slate-700">${l.details}</td>
+                    <td class="p-3 text-slate-500">${l.user}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2.5 py-0.5 text-[10px] font-bold rounded ${l.status === 'SUCCESS' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${l.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function clearSystemLogsClient() {
+            if (!confirm('คุณต้องการล้างบันทึกกิจกรรมทั้งหมดหรือไม่?')) return;
+            initDefaultLogs();
+            renderLogsTable();
+        }
+    </script>
+</body>
+</html>
