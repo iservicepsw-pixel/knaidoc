@@ -1,0 +1,981 @@
+
+        // Pre-loaded Knowledge Base (7 Documents)
+        const INITIAL_DOCUMENTS = [
+          {
+            "id": "doc-001",
+            "filename": "Win-Win Partnership Proposal Outline.pdf",
+            "title": "ร่างแผนหัวข้อการนำเสนอผลประโยชน์ต่างตอบแทน (Win-Win Partnership Proposal)",
+            "categories": [
+              "ยุทธศาสตร์และข้อเสนอพันธมิตร (Strategy & Partnership)",
+              "แผนธุรกิจและโมเดลธุรกิจ (Business Model & Plan)"
+            ],
+            "source_agency": "มูลนิธินพเฉลิมโรจน์ ร่วมกับ ททท. / กระทรวงการท่องเที่ยวและกีฬา",
+            "analyzed_at": "2026-08-20 13:22:13",
+            "summary": "ข้อเสนอพันธมิตรเชิงยุทธศาสตร์เพื่อขับเคลื่อน National Tourism Platform บน Government Cloud (GDCC) 100% ปกป้องอธิปไตยทางข้อมูล และสร้างระบบนิเวศการท่องเที่ยวที่เป็นธรรม โดยนำเสนอผลประโยชน์ต่างตอบแทนแก่ภาคเอกชน อาทิ สายการบิน (First-Touch Booking, Targeted Ad), ห้างสรรพสินค้า/โมเดลการ์ด (Foot Traffic Driver, E-Coupon, Tax Refund Integration) และสถาบันการเงิน (Exclusive Payment Gateway, New Account Acquisition)",
+            "stakeholders": [
+              { "rank": 1, "name": "กระทรวงการท่องเที่ยวและกีฬา / ททท.", "role": "ภาครัฐระดับนโยบาย", "responsibility": "กำกับดูแลนโยบาย ให้การสนับสนุนงบประมาณและโปรโมตร่วมในแคมเปญ Amazing Thailand" },
+              { "rank": 2, "name": "มูลนิธินพเฉลิมโรจน์", "role": "หน่วยงานบริหารจัดการหลัก (Main Platform Operator)", "responsibility": "พัฒนา ดำเนินงาน คลังข้อมูล ประมวลผล AI และบริหารสิทธิ์การใช้งาน" },
+              { "rank": 3, "name": "กลุ่มสายการบิน (Airlines & Aviation)", "role": "พันธมิตรขนส่ง (Transport Partner)", "responsibility": "เชื่อมโยง API จองตั๋วเครื่องบิน ประชาสัมพันธ์ Pre-flight Email" },
+              { "rank": 4, "name": "กลุ่มห้างสรรพสินค้าและค้าปลีก (Retail)", "role": "พันธมิตรการค้า (Commercial Partner)", "responsibility": "จัดทำโปรโมชัน E-Coupon, Location-Based Privileges และเชื่อมต่อ Tax Refund" },
+              { "rank": 5, "name": "สถาบันการเงินและธนาคาร (Financial)", "role": "พันธมิตรการชำระเงิน (Payment Partner)", "responsibility": "ให้บริการ Exclusive Payment Gateway และสนับสนุนงบ Co-Campaign" }
+            ],
+            "timeline": [
+              { "topic": "ยื่นข้อเสนอความร่วมมือและจัดตั้ง Joint Task Force", "stakeholders": "มูลนิธินพเฉลิมโรจน์, ททท., เอกชนภาคี", "timeframe": "เดือนที่ 1 - 2" },
+              { "topic": "เชื่อมต่อ API ระบบจองและ Payment Gateway", "stakeholders": "ทีมพัฒนาซอฟต์แวร์, ธนาคาร, สายการบิน", "timeframe": "เดือนที่ 3 - 6" },
+              { "topic": "ทดลองแคมเปญนำร่อง Co-Marketing", "stakeholders": "ห้างสรรพสินค้า, สายการบิน, ร้านค้า Sandbox", "timeframe": "เดือนที่ 7 - 9" },
+              { "topic": "เปิดตัวแพลตฟอร์มอย่างเป็นทางการ (Grand Launch)", "stakeholders": "ภาคีสี่ฝ่าย, กระทรวงฯ, สื่อมวลชน", "timeframe": "เดือนที่ 10 - 12" }
+            ],
+            "expert_analysis": {
+              "business": "เปลี่ยนรูปแบบจากการขอเงินบริจาคเป็นการแลกเปลี่ยนผลประโยชน์ธุรกิจ (Barter Model) ช่วยลดค่าคอมมิชชันและเพิ่ม Conversion Rate Direct Booking ให้ผู้ประกอบการไทย",
+              "legal": "การจัดเก็บข้อมูลบน GDCC 100% สอดคล้องกับ พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) และรักษาอธิปไตยดิจิทัลของชาติ",
+              "investor": "ช่วยประหยัดงบโฆษณาต่างประเทศ โดยการใช้ Owned Media Barter ร่วมกับพันธมิตรยักษ์ใหญ่",
+              "it": "ต้องออกแบบ API Gateway ให้รองรับ Traffic หนาแน่น และเชื่อมต่อ Microservices ร่วมกับระบบภายนอกได้เรียบร้อย",
+              "strategy": "ใช้กลยุทธ์ Win-Win จูงใจทั้ง Supply Side (โรงแรม/ร้านค้า) และ Demand Side (นักท่องเที่ยว) เข้าสู่แพลตฟอร์ม",
+              "economics": "ช่วยหมุนเวียนรายได้สู่เศรษฐกิจฐานราก ลดการรั่วไหลของเม็ดเงินออกนอกประเทศผ่าน OTA ต่างชาติกว่า 100,000 ล้านบาท/ปี",
+              "recommendations": "ควรกำหนด SLA การเชื่อมต่อ API กับสายการบินและธนาคารให้ชัดเจน เพื่อป้องกันระบบล่มในช่วง Peak Season"
+            },
+            "categorized_key_points": {
+              "people": ["นักท่องเที่ยวไทยและต่างชาติเป้าหมาย 100,000 Active Users/วัน", "ทีมงานบริหารจัดการมูลนิธิฯ"],
+              "agencies": ["มูลนิธินพเฉลิมโรจน์", "ททท.", "กระทรวงการท่องเที่ยวและกีฬา", "สภาอุตฯ ท่องเที่ยว"],
+              "budget": ["งบร่วมทุนโฆษณา Co-Marketing 100-200 บาท/คน", "โมเดล Barter Media ศูนย์บาท"],
+              "timeline": ["แผนงานเปิดตัวนำร่องและขยายผลทั่วประเทศใน 12 เดือน"],
+              "stakeholders": ["สายการบิน", "ห้างสรรพสินค้า", "ธนาคาร", "ผู้ประกอบการท้องถิ่น"],
+              "constraints": ["ต้องพึ่งพาความร่วมมือในการเปิด API ของภาคเอกชนรายใหญ่"],
+              "advantages": ["จัดเก็บข้อมูลบน GDCC 100%", "ลดค่าฟีและดึงเงินกลับสู่ท้องถิ่น"],
+              "opportunities": ["ยกระดับภาพลักษณ์องค์กรเอกชนด้าน CSR & ESG", "สิทธิ์เข้าถึง Dashboard Insight ภาพรวม"]
+            },
+            "file_size": "2.4 MB"
+          },
+          {
+            "id": "doc-002",
+            "filename": "Budget Allocation Summary.pdf",
+            "title": "ตารางสรุปสัดส่วนงบประมาณรายหมวด (Budget Allocation Summary)",
+            "categories": [
+              "การจัดสรรงบประมาณและการเงิน (Budget & Finance)"
+            ],
+            "source_agency": "โครงการ Thailand Tourism DPI (เสนอขอทุนกองทุน DE)",
+            "analyzed_at": "2026-08-20 13:22:13",
+            "summary": "วิเคราะห์สัดส่วนงบประมาณรวม 50,000,000 บาท แบ่งออกเป็น 8 หมวดงานหลัก โดยเน้นการลงทุนใน Core Technology (Hardware, Software, Cloud) สูงถึง 62.53% (31.25 ล้านบาท) เพื่อสร้างโครงสร้างพื้นฐานดิจิทัลสาธารณะ (Digital Public Infrastructure) ขณะที่ค่างานบุคลากรควบคุมไว้เพียง 11.24% ต่ำกว่าเกณฑ์มาตรฐานวิจัยทั่วไป",
+            "stakeholders": [
+              { "rank": 1, "name": "คณะกรรมการพิจารณาทุน กองทุน DE", "role": "ผู้อนุมัติงบประมาณ", "responsibility": "ประเมินความคุ้มค่าและอนุมัติวงเงินสนับสนุนโครงการ" },
+              { "rank": 2, "name": "ดร.ชัยโรจน์ นพเฉลิมโรจน์ & คณะวิจัย", "role": "บริหารงบประมาณและโครงการ", "responsibility": "บริหารจัดการใช้จ่ายงบประมาณให้เป็นไปตามสเปกและกรอบเวลา" },
+              { "rank": 3, "name": "ทีมวิศวกรซอฟต์แวร์และผู้เชี่ยวชาญไอที", "role": "ผู้รับจ้างพัฒนาระบบ", "responsibility": "พัฒนาระบบ Hardware, Software, Cloud และ AI Trip Planning" },
+              { "rank": 4, "name": "ผู้ตรวจสอบบัญชีรับอนุญาต (CPA)", "role": "ผู้ตรวจสอบการเงิน", "responsibility": "ตรวจสอบเอกสารการเงินและรายงานงบดุลโครงการ" }
+            ],
+            "timeline": [
+              { "topic": "เบิกจ่ายงวดที่ 1 (30% - 15 ล้านบาท)", "stakeholders": "กองทุน DE, มูลนิธิฯ", "timeframe": "ภายใน 30 วันแรก" },
+              { "topic": "เบิกจ่ายงวดที่ 2 (25% - 12.5 ล้านบาท)", "stakeholders": "กองทุน DE, ทีมพัฒนาไอที", "timeframe": "ภายใน 90 วัน" },
+              { "topic": "เบิกจ่ายงวดที่ 3 (25% - 12.5 ล้านบาท)", "stakeholders": "กองทุน DE, ทีมภาคสนาม", "timeframe": "ภายใน 240 วัน" },
+              { "topic": "เบิกจ่ายงวดที่ 4 (20% - 10 ล้านบาท)", "stakeholders": "กองทุน DE, ผู้ตรวจสอบบัญชี", "timeframe": "ภายใน 365 วัน" }
+            ],
+            "expert_analysis": {
+              "business": "โครงสร้างงบประมาณเน้นการสร้าง Digital Asset ที่ยั่งยืน สามารถต่อยอดสร้างรายได้แบบ Self-Sustaining หลังจบทุน",
+              "legal": "การจัดซื้อจัดจ้างปฏิบัติตามระเบียบกองทุน DE มาตรา 26 (2) อย่างเคร่งครัด ตรวจสอบได้โปร่งใส",
+              "investor": "ความเสี่ยงทางการเงินต่ำเนื่องจากควบคุมค่าแรงบุคลากรไว้เพียง 11.24% เงินส่วนใหญ่ลงในสินทรัพย์ระบบ",
+              "it": "งบด้าน Cloud & AI (18.01%) เพียงพอสำหรับประมวลผล Big Data และทำ AI Personalized Recommendation Engine",
+              "strategy": "การกระจายงบไปยังการตลาดและ Kiosk หน้างาน (15.87%) ช่วยประกันยอดดาวน์โหลดและกระตุ้นการใช้งานจริง",
+              "economics": "ทุก 1 บาทที่ลงทุนในโครงสร้างพื้นฐานดิจิทัลนี้ สร้างผลตอบแทนทางเศรษฐกิจกลับคืนสังคมหลายเท่าตัว",
+              "recommendations": "ควรตั้งงบสำรอง Contingency ไว้ประมาณ 5-8% เผื่อความผันผวนของราคา Server Hardware ในตลาด"
+            },
+            "categorized_key_points": {
+              "people": ["คณะทำงานหลัก 3 คน", "บุคลากรผู้ช่วย 7 ตำแหน่ง", "ช่างเทคนิค 2 คน"],
+              "agencies": ["กองทุนพัฒนาดิจิทัลเพื่อเศรษฐกิจและสังคม (กองทุน DE)", "มูลนิธินพเฉลิมโรจน์"],
+              "budget": ["งบประมาณรวม 50,000,000 บาท", "Core Tech 62.53% (31.25 ล้านบาท)", "บุคลากร 11.24%"],
+              "timeline": ["ระยะเวลาดำเนินโครงการ 12 เดือน (4 งวดงาน)"],
+              "stakeholders": ["คณะกรรมการทุน", "ทีมวิจัย", "ผู้ตรวจสอบบัญชี"],
+              "constraints": ["ต้องเบิกจ่ายตามงวดงานและเงื่อนไขของกองทุนภาครัฐ"],
+              "advantages": ["อัตราส่วนงบประมาณมุ่งเน้นผลิตภัณฑ์มากกว่าค่าแรง"],
+              "opportunities": ["เป็นโมเดลต้นแบบงบประมาณสำหรับโครงการ DPI ระดับชาติ"]
+            },
+            "file_size": "1.8 MB"
+          },
+          {
+            "id": "doc-003",
+            "filename": "Checklist โโครงสร้างหัวข้อและประเด็นปลีกย่อย.pdf",
+            "title": "เช็กลิสต์โครงสร้างหัวข้อและประเด็นปลีกย่อยฉบับสมบูรณ์",
+            "categories": [
+              "เช็กลิสต์และข้อกำหนดโครงการ (Checklist & Requirements)",
+              "สถาปัตยกรรมระบบและคลาวด์ภาครัฐ (Architecture & GDCC Cloud)",
+              "ความปลอดภัยและกฎหมาย (Cybersecurity, PDPA & Compliance)"
+            ],
+            "source_agency": "มูลนิธินพเฉลิมโรจน์ / กองทุน DE / วุฒิสภา",
+            "analyzed_at": "2026-08-20 13:22:13",
+            "summary": "เช็กลิสต์ความครบถ้วน 100% สำหรับจัดทำข้อเสนอโครงการ (Proposal) ครอบคลุม 7 หมวดหมู่หลัก ได้แก่ ข้อมูลองค์กรภาคีสี่ฝ่าย, บริบทเชิงยุทธศาสตร์ Living Lab (8 จังหวัดอันดามัน & ลังกาวี), สถาปัตยกรรม 3 แพลตฟอร์ม (ทศกัณฐ์, เบญจรงค์, Staff App), ระบบความปลอดภัย RBAC & PDPA, แผนความต่อเนื่อง DR/HA, และงวดงานการส่งมอบ 4 งวดใน 12 เดือน",
+            "stakeholders": [
+              { "rank": 1, "name": "นายสุวิทย์ ขาวดี (สมาชิกวุฒิสภา)", "role": "ประธานคณะทำงานส่งเสริมเศรษฐกิจท่องเที่ยวภาคใต้", "responsibility": "ขับเคลื่อนนโยบายภาพรวมและประสานงานวุฒิสภา" },
+              { "rank": 2, "name": "ดร.ชัยโรจน์ นพเฉลิมโรจน์", "role": "หัวหน้าโครงการ", "responsibility": "กำกับดูแลสถาปัตยกรรมระบบและการดำเนินงานทุกหมวดหมู่" },
+              { "rank": 3, "name": "พลเอก อาภากร เผือกสุวรรณ & คณะวิศวกร", "role": "ทีมวิศวกรและผู้ร่วมงานหลัก", "responsibility": "ออกแบบระบบความปลอดภัยไซเบอร์และสถาปัตยกรรมไอที" },
+              { "rank": 4, "name": "นางสาวณหทัย หมวดเมือง", "role": "ผู้ประสานงานโครงการ", "responsibility": "บริหารจัดการเอกสาร เช็กลิสต์ และการติดตามผล" }
+            ],
+            "timeline": [
+              { "topic": "ตรวจทานเช็กลิสต์และลงนาม MOU ความร่วมมือ", "stakeholders": "ภาคีสี่ฝ่าย, วุฒิสภา", "timeframe": "16 กรกฎาคม พ.ศ. 2569" },
+              { "topic": "จัดทำรายงาน Inception Report (งวดที่ 1)", "stakeholders": "หัวหน้าโครงการ, คณะวิจัย", "timeframe": "ภายใน 30 วัน" },
+              { "topic": "พัฒนาโครงสร้างคลาวด์และ Pilot Launch ณ เกาะหลีเป๊ะ (งวดที่ 2-3)", "stakeholders": "ทีมวิศวกร, ผู้ประกอบการสตูล", "timeframe": "ภายใน 240 วัน" },
+              { "topic": "ส่งมอบ Policy White Paper และรายงานฉบับสมบูรณ์ (งวดที่ 4)", "stakeholders": "มูลนิธิฯ, วุฒิสภา, ภาครัฐ", "timeframe": "ภายใน 365 วัน" }
+            ],
+            "expert_analysis": {
+              "business": "เช็กลิสต์มีความสมบูรณ์สูงมาก ตอบโจทย์ความต้องการของทั้งฝั่ง B2C (นักท่องเที่ยว) และ B2B (ร้านค้า/โรงแรม)",
+              "legal": "มีข้อกำหนดความปลอดภัย 4 ชั้น (JwtAuthGuard, RolesGuard ฯลฯ) และการบันทึก Audit Logs สอดคล้องตาม พ.ร.บ. คอมพิวเตอร์ฯ",
+              "investor": "โครงสร้างแผนงานชัดเจน มีการวัดผล Output KPIs เชิงปริมาณและคุณภาพที่น่าเชื่อถือ",
+              "it": "ระบบ 3 Pillars (Tohsakan, Benjarong, Staff App) แบ่งแยกหน้าที่ส่วนหน้าและส่วนหลังบ้านได้อย่างสมบูรณ์",
+              "strategy": "การทดสอบบน Living Lab (เกาะหลีเป๊ะ สตูล) ช่วยลดความเสี่ยงก่อนขยายผลสู่ระดับประเทศ",
+              "economics": "ช่วยสร้างความเชื่อมั่นให้นักท่องเที่ยวต่างชาติด้านความปลอดภัยและการแพทย์ฉุกเฉิน (Telemed & Sky Doctor)",
+              "recommendations": "ควรเน้นย้ำการทดสอบ Penetration Test โดยหน่วยงานภายนอกเพื่อยืนยันตามเช็กลิสต์หมวด 4"
+            },
+            "categorized_key_points": {
+              "people": ["ผู้สมัครใช้งาน 1,000,000 คนต่อปี", "ทีมบุคลากรหน้างาน Gig Workers"],
+              "agencies": ["สภาอุตฯ ท่องเที่ยว (TCT)", "TFOPTA", "วุฒิสภา", "มูลนิธินพเฉลิมโรจน์"],
+              "budget": ["วงเงินรวม 50 ล้านบาท", "แบ่งจ่าย 4 งวดตาม Milestones"],
+              "timeline": ["12 เดือน (365 วัน)"],
+              "stakeholders": ["นักท่องเที่ยว", "ผู้ประกอบการ 10,000 ราย", "หน่วยงานรัฐ 10 แห่ง"],
+              "constraints": ["จุดอับสัญญาณอินเทอร์เน็ตบนเกาะ (ต้องใช้ Offline-First Design)"],
+              "advantages": ["สถาปัตยกรรมระบบขยายตัวอัตโนมัติ Auto-scaling 100TB"],
+              "opportunities": ["ขยายผลการท่องเที่ยวข้ามแดนกับเกาะลังกาวี มาเลเซีย"]
+            },
+            "file_size": "3.1 MB"
+          },
+          {
+            "id": "doc-004",
+            "filename": "Final Content Outline.pdf",
+            "title": "โครงร่างเนื้อหาเล่มข้อเสนอโครงการ (Final Content Outline)",
+            "categories": [
+              "ยุทธศาสตร์และข้อเสนอพันธมิตร (Strategy & Partnership)",
+              "การจัดสรรงบประมาณและการเงิน (Budget & Finance)"
+            ],
+            "source_agency": "มูลนิธินพเฉลิมโรจน์",
+            "analyzed_at": "2026-08-20 13:22:13",
+            "summary": "โครงร่างเนื้อหาเล่มข้อเสนอโครงการอย่างละเอียด แบ่งออกเป็น 2 ส่วนหลัก: [ส่วนที่ 1] แผนยุทธศาสตร์และสถาปัตยกรรมไอที (ทศกัณฐ์, เบญจรงค์, Staff App, Cybersecurity, DR Plan, Impact KPIs) และ [ส่วนที่ 2] แหล่งเงินทุนและเกณฑ์คุณสมบัติขอรับการสนับสนุนจากภาครัฐ (กองทุน DE, depa, กองทุนท่องเที่ยว, ททท., สสว., CEA) และภาคเอกชน (ธนาคาร, ค่ายมือถือ, สายการบิน)",
+            "stakeholders": [
+              { "rank": 1, "name": "สำนักงานคณะกรรมการดิจิทัลเพื่อเศรษฐกิจและสังคมแห่งชาติ (สดช.)", "role": "แหล่งทุนหลัก (Government Funding Source)", "responsibility": "พิจารณาทุนอุดหนุนโครงสร้างพื้นฐานดิจิทัล" },
+              { "rank": 2, "name": "สำนักงานส่งเสริมเศรษฐกิจดิจิทัล (depa)", "role": "แหล่งทุนส่งเสริมซอฟต์แวร์ต้นแบบ", "responsibility": "สนับสนุนทุนกลุ่ม depa Digital Infrastructure Fund" },
+              { "rank": 3, "name": "การท่องเที่ยวแห่งประเทศไทย (ททท.)", "role": "พันธมิตรส่งเสริมการตลาด", "responsibility": "สนับสนุนงบประมาณร่วม (Co-Budget / Strategic Partnership)" },
+              { "rank": 4, "name": "สสว. และ สำนักงานส่งเสริมเศรษฐกิจสร้างสรรค์ (CEA)", "role": "แหล่งทุนซอฟต์พาวเวอร์และ SME", "responsibility": "สนับสนุนงบ Content Marketing และยกระดับร้านค้าชุมชน" }
+            ],
+            "timeline": [
+              { "topic": "ยื่นขอทุนพัฒนาระบบกับ กองทุน DE / depa", "stakeholders": "มูลนิธิฯ, สดช., depa", "timeframe": "ช่วงกลางปี (กรกฎาคม)" },
+              { "topic": "พิจารณาอนุมัติเงินทุนและลงนามสัญญา", "stakeholders": "คณะกรรมการทุน, มูลนิธิฯ", "timeframe": "ระยะเวลา 3 - 5 เดือน" },
+              { "topic": "ดำเนินโครงการพัฒนาซอฟต์แวร์ Phase 1", "stakeholders": "ทีมพัฒนาซอฟต์แวร์, พาร์ทเนอร์", "timeframe": "เดือนที่ 1 - 3 หลังอนุมัติ" }
+            ],
+            "expert_analysis": {
+              "business": "แนวทางการยื่นขอทุนแบ่งแยกตามวัตถุประสงค์ (Tech / Marketing / SME) ช่วยเพิ่มโอกาสได้รับการอนุมัติสูงขึ้น",
+              "legal": "คุณสมบัติมูลนิธิถูกต้องตามกฎหมายไทย เป็นองค์กรไม่แสวงหากำไรที่ตรวจสอบงบดุลได้",
+              "investor": "การผสมผสานงบภาครัฐร่วมกับงบ Barter Media เอกชน ช่วยให้โครงการเติบโตแบบ Scale-up ได้รวดเร็ว",
+              "it": "ต้องเตรียมระบบติดตามและส่งต่อ Log ตามมาตรฐาน พ.ร.บ. คอมพิวเตอร์ฯ เพื่อรองรับการตรวจรับงานทุนรัฐ",
+              "strategy": "ชูประเด็น 'การประหยัดงบประมาณชาติระยะยาว' ช่วยดึงดูดใจคณะกรรมการจัดซื้อจัดจ้างภาครัฐ",
+              "economics": "ลดการพึ่งพา OTA ต่างชาติ และเพิ่มมูลค่าการท่องเที่ยวเชิงสร้างสรรค์ (Creative Tourism)",
+              "recommendations": "ควรปรับเน้นจุดเด่นของเอกสารยื่นขอทุนให้ตรงกับเป้าหมายเฉพาะของแต่ละกองทุน"
+            },
+            "categorized_key_points": {
+              "people": ["กลุ่มผู้ประกอบการ SME และวิสาหกิจชุมชนรายย่อย"],
+              "agencies": ["สดช.", "depa", "ททท.", "สสว.", "CEA", "MOTS"],
+              "budget": ["กรอบวงเงินยื่นขอทุนภาครัฐรวม 27 - 49 ล้านบาท"],
+              "timeline": ["รอบเปิดรับสมัครทุนภาครัฐปีละ 1 ครั้ง"],
+              "stakeholders": ["คณะกรรมการพิจารณาทุน", "ผู้เชี่ยวชาญ IT/Marketing"],
+              "constraints": ["ระยะเวลาอนุมัติทุนใช้เวลา 3-5 เดือน ต้องวางแผนสภาพคล่อง"],
+              "advantages": ["องค์กรมีโปรไฟล์และประสบการณ์ทำ Tech-Platform ร่วมกับรัฐ"],
+              "opportunities": ["สร้างระบบนิเวศการระดมทุนแบบผสมผสาน (Hybrid Funding)"]
+            },
+            "file_size": "2.9 MB"
+          },
+          {
+            "id": "doc-005",
+            "filename": "Government Cloud GDCC & Architecture.pdf",
+            "title": "การใช้ประโยชน์ Government Cloud (GDCC) และสถาปัตยกรรมระบบ",
+            "categories": [
+              "สถาปัตยกรรมระบบและคลาวด์ภาครัฐ (Architecture & GDCC Cloud)",
+              "ความปลอดภัยและกฎหมาย (Cybersecurity, PDPA & Compliance)"
+            ],
+            "source_agency": "สถาบันส่งเสริมการวิเคราะห์และบริหารข้อมูลดิจิทัล (GBDi / DGA)",
+            "analyzed_at": "2026-08-20 13:22:13",
+            "summary": "รายละเอียดการติดตั้งและประมวลผลบน Government Data Center and Cloud Service (GDCC) เพื่อรักษาอธิปไตยทางข้อมูล 100% พร้อมการประมาณขนาดทรัพยากร (Resource Estimation) รองรับ 100,000 Active Users/วัน (250-280 vCPU, RAM 500-550 GB, Storage 43 TB) และสถาปัตยกรรม Zero Trust, Confidential Computing, Multi-Zone DR Site",
+            "stakeholders": [
+              { "rank": 1, "name": "สถาบันส่งเสริมการวิเคราะห์และบริหารข้อมูลดิจิทัล (GBDi / DGA)", "role": "ผู้ให้บริการคลาวด์ภาครัฐ GDCC", "responsibility": "จัดสรรทรัพยากร Compute, Storage และโครงสร้างพื้นฐานความปลอดภัย" },
+              { "rank": 2, "name": "กระทรวงดิจิทัลเพื่อเศรษฐกิจและสังคม (MDES)", "role": "หน่วยงานรับรองโครงการ", "responsibility": "ออกหนังสือรับรองโครงการบริการสาธารณะเพื่อใช้สิทธิ์ GDCC ฟรี" },
+              { "rank": 3, "name": "ทีมวิศวกร DevOps & Cloud Architect", "role": "ผู้ดูแลระบบคลาวด์", "responsibility": "ติดตั้ง Kubernetes Cluster, Auto-scaling และตั้งค่า Multi-Zone DR Drill" }
+            ],
+            "timeline": [
+              { "topic": "ยื่นเอกสารขอจัดสรรทรัพยากร GDCC ผ่าน DGA", "stakeholders": "มูลนิธิฯ, กระทรวงพันธมิตร, DGA", "timeframe": "เดือนที่ 1" },
+              { "topic": "จัดตั้งระบบ Production & Staging บน Kubernetes", "stakeholders": "ทีม Cloud Architect, DGA Admin", "timeframe": "เดือนที่ 2 - 3" },
+              { "topic": "ทดสอบระบบสำรอง DR Drill (RPO <= 5 นาที, RTO <= 30 นาที)", "stakeholders": "ทีม DevOps, SOC 24/7", "timeframe": "เดือนที่ 9 - 10" }
+            ],
+            "expert_analysis": {
+              "business": "การได้รับการจัดสรรคลาวด์ GDCC ฟรี ช่วยประหยัดต้นทุนคลาวด์เชิงพาณิชย์ได้ถึงปีละ 4.5 - 6.0 ล้านบาท",
+              "legal": "การจัดเก็บข้อมูลภายในประเทศ 100% สอดคล้องตามกฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA/GDPR) และ พ.ร.บ. ไซเบอร์ฯ",
+              "investor": "ช่วยลดภาระงบประมาณดำเนินงาน (OPEX) ส่งผลให้โครงสร้างทางการเงินของโครงการมีความมั่นคงสูง",
+              "it": "สถาปัตยกรรมแบบ Cloud-Native Microservices ช่วยให้ระบบขยายตัวรองรับช่วงเทศกาลได้อัตโนมัติ",
+              "strategy": "ยึดคืนอธิปไตยทางข้อมูล (Data Sovereignty) ไม่ให้นายทุนต่างชาตินำ Big Data ไทยไปใช้ประโยชน์ฝ่ายเดียว",
+              "economics": "สร้างฐานข้อมูล National Tourism Experience Database เพื่อใช้วางนโยบายกระตุ้นเศรษฐกิจชาติอย่างแม่นยำ",
+              "recommendations": "ควรขอเผื่อ Buffer ทรัพยากรไว้ประมาณ 20% รองรับ Peak Load ที่อาจเกิดขึ้นฉับพลัน"
+            },
+            "categorized_key_points": {
+              "people": ["ผู้ใช้งาน Active Users 100,000 คน/วัน (Peak 10,000 คนพร้อมกัน)"],
+              "agencies": ["DGA / GBDi", "กระทรวงดิจิทัลเพื่อเศรษฐกิจและสังคม (MDES)"],
+              "budget": ["ทรัพยากร GDCC ขอฟรีมูลค่า 4.5-6.0 ล้านบาท/ปี", "งบพัฒนาซอฟต์แวร์ 27-49 ล้านบาท"],
+              "timeline": ["ระบบเปิดใช้งาน Production ภายใน 12 เดือน"],
+              "stakeholders": ["DGA Cloud Admin", "ทีม DevOps", "ศูนย์เฝ้าระวัง SOC 24/7"],
+              "constraints": ["ต้องได้รับการรับรองจากหน่วยงานรัฐเจ้าของโครงการ"],
+              "advantages": ["ความปลอดภัยระดับ Zero Trust และ Confidential Computing"],
+              "opportunities": ["ต่อยอดสู่นโยบาย Big Data ภาครัฐ (Data-Driven Tourism Policy)"]
+            },
+            "file_size": "3.5 MB"
+          },
+          {
+            "id": "doc-006",
+            "filename": "MOU บันทึกความเข้าใจความร่วมมือขั้นต้น.pdf",
+            "title": "บันทึกความเข้าใจความร่วมมือขั้นต้น (Memorandum of Understanding: MOU)",
+            "categories": [
+              "บันทึกความร่วมมือ (MOU & Governance)",
+              "ยุทธศาสตร์และข้อเสนอพันธมิตร (Strategy & Partnership)"
+            ],
+            "source_agency": "สภาอุตฯ ท่องเที่ยว, TFOPTA, คณะทำงานส่งเสริมฯ ภาคใต้ (วุฒิสภา), มูลนิธินพเฉลิมโรจน์",
+            "analyzed_at": "2026-08-20 13:22:13",
+            "summary": "กรอบความร่วมมือภาคี 4 ฝ่าย ลงนามอย่างเป็นทางการเมื่อวันที่ 16 กรกฎาคม พ.ศ. 2569 ว่าด้วยการพัฒนาโครงสร้างพื้นฐาน ข้อมูล และนวัตกรรมเพื่อเศรษฐกิจการท่องเที่ยว สุขภาพมูลค่าสูง และบริการแห่งอนาคต โดยกำหนดบทบาทหน้าที่ชัดเจนของสภาอุตฯ ท่องเที่ยว, TFOPTA, คณะทำงานวุฒิสภา และมูลนิธินพเฉลิมโรจน์",
+            "stakeholders": [
+              { "rank": 1, "name": "นายสุวิทย์ ขาวดี", "role": "สมาชิกวุฒิสภา / ประธานคณะทำงานส่งเสริมเศรษฐกิจท่องเที่ยวภาคใต้", "responsibility": "ลงนามฝ่ายคณะทำงานวุฒิสภา ขับเคลื่อนนโยบายเชิงยุทธศาสตร์" },
+              { "rank": 2, "name": "นายชัย อรุณานนท์ชัย", "role": "ประธานสภาอุตสาหกรรมท่องเที่ยวแห่งประเทศไทย", "responsibility": "ลงนามฝ่าย TCT เชื่อมโยงเครือข่ายผู้ประกอบการท่องเที่ยวทั่วประเทศ" },
+              { "rank": 3, "name": "ว่าที่ประธานสมาคม TFOPTA (นายสามารถ เจริญฤทธิ์)", "role": "ผู้นำสมาคมสมาพันธ์ธุรกิจท่องเที่ยวส่วนภูมิภาค", "responsibility": "ลงนามฝ่าย TFOPTA หนุนท่องเที่ยวมูลค่าสูงและเชิงแพทย์" },
+              { "rank": 4, "name": "ดร.ชัยโรจน์ นพเฉลิมโรจน์", "role": "ประธานมูลนิธินพเฉลิมโรจน์", "responsibility": "ลงนามฝ่ายมูลนิธิฯ บริหารจัดการวิจัยและพัฒนาแพลตฟอร์มดิจิทัล" }
+            ],
+            "timeline": [
+              { "topic": "พิธีลงนามบันทึกความเข้าใจ MOU ภาคี 4 ฝ่ายอย่างเป็นทางการ", "stakeholders": "ผู้ลงนามทั้ง 4 ฝ่าย", "timeframe": "วันพฤหัสบดีที่ 16 กรกฎาคม พ.ศ. 2569" },
+              { "topic": "จัดตั้งคณะทำงานร่วมและกำหนดข้อเสนอเชิงนโยบาย", "stakeholders": "คณะทำงานภาคี 4 ฝ่าย", "timeframe": "ภายใน 60 วันหลังลงนาม" }
+            ],
+            "expert_analysis": {
+              "business": "มีแรงหนุนที่แข็งแกร่งจากสภาอุตฯ ท่องเที่ยว และ TFOPTA ช่วยให้การ Onboarding ร้านค้าและโรงแรมทำได้รวดเร็ว",
+              "legal": "เป็นกรอบความร่วมมือแบบไม่มีภาระผูกพันทางการเงินหรือกฎหมายโดยตรง ทำให้เริ่มดำเนินงานได้ยืดหยุ่น",
+              "investor": "ลดความเสี่ยงในการเจาะตลาด (Go-to-Market Risk) ด้วยฐานผู้ประกอบการสมาชิกในมือภาคีหลายหมื่นราย",
+              "it": "ต้องเร่งออกแบบสิทธิ์การเข้าถึงข้อมูลตามบทบาท (RBAC) ให้สอดคล้องกับบทบาทของแต่ละภาคี",
+              "strategy": "เป็นการรวมพลังแบบบูรณาการ ภาครัฐ-เอกชน-วิชาการ-วุฒิสภา เพื่อยกระดับอุตสาหกรรมท่องเที่ยวชาติ",
+              "economics": "มุ่งเน้นการท่องเที่ยวคุณภาพ สุขภาพมูลค่าสูง (Wellness Tourism) เพื่อเพิ่มรายได้ต่อหัวของนักท่องเที่ยว",
+              "recommendations": "ควรแปลงกรอบ MOU เป็นสัญญาดำเนินโครงการเฉพาะ (SLA/Project Agreement) ในขั้นตอนถัดไป"
+            },
+            "categorized_key_points": {
+              "people": ["คณะทำงานส่งเสริมเศรษฐกิจท่องเที่ยวภาคใต้ ในคณะอนุกรรมาธิการฯ วุฒิสภา"],
+              "agencies": ["สภาอุตสาหกรรมท่องเที่ยวแห่งประเทศไทย", "TFOPTA", "วุฒิสภา", "มูลนิธินพเฉลิมโรจน์"],
+              "budget": ["ไม่มีภาระผูกพันทางการเงินระหว่างภาคีตาม MOU เว้นแต่ทำสัญญาเฉพาะ"],
+              "timeline": ["มีผลตั้งแต่วันลงนาม (16 กรกฎาคม 2569) เป็นต้นไป"],
+              "stakeholders": ["ผู้ประกอบการท่องเที่ยวทั่วประเทศ", "ชุมชนท้องถิ่น Sandbox 8 จังหวัด"],
+              "constraints": ["เป็นกรอบบันทึกความเข้าใจ ต้องทำข้อตกลงย่อยเพื่อผลบังคับใช้ทางกฎหมาย"],
+              "advantages": ["การสนับสนุนระดับนโยบายจากวุฒิสภาและสภาอุตสาหกรรมท่องเที่ยว"],
+              "opportunities": ["ผลักดันเป็นนโยบายระดับชาติ (Policy White Paper) เสนอต่อรัฐบาล"]
+            },
+            "file_size": "1.5 MB"
+          },
+          {
+            "id": "doc-007",
+            "filename": "Business Model Canvas & Business Plan.pdf",
+            "title": "แผนธุรกิจและโมเดลธุรกิจ (Business Model Canvas & Business Plan)",
+            "categories": [
+              "แผนธุรกิจและโมเดลธุรกิจ (Business Model & Plan)",
+              "การจัดสรรงบประมาณและการเงิน (Budget & Finance)"
+            ],
+            "source_agency": "โครงการโครงสร้างพื้นฐานดิจิทัลการท่องเที่ยวไทย",
+            "analyzed_at": "2026-08-20 13:22:13",
+            "summary": "รายละเอียด Business Model Canvas 10 องค์ประกอบประกอบด้วย Key Partners, Key Activities, Value Propositions, Customer Relationships, Customer Segments, Key Resources, Channels, Revenue Streams, Cost Structure และ Government Subsidy พร้อมวิเคราะห์ SWOT, Porter's Five Forces และการวิเคราะห์ความเสี่ยง Compliance Risk (PDPA, e-Payment, Cybersecurity Act)",
+            "stakeholders": [
+              { "rank": 1, "name": "นักท่องเที่ยวไทยและต่างชาติ (B2C)", "role": "ผู้ใช้งานปลายทาง", "responsibility": "จองบริการ ใช้งานแอป Tohsakan วางแผนทริปด้วย AI" },
+              { "rank": 2, "name": "ผู้ประกอบการท่องเที่ยวรายย่อย SME (B2B)", "role": "ผู้ให้บริการ (Supply Side)", "responsibility": "นำห้องพัก ทัวร์ สินค้าชุมชน ขึ้นระบบ Benjarong" },
+              { "rank": 3, "name": "หน่วยงานภาครัฐและผู้กำหนดนโยบาย (B2G)", "role": "ผู้ใช้ข้อมูลวางแผน", "responsibility": "รับข้อมูล Tourism Intelligence Dashboard ติดตาม Carrying Capacity" },
+              { "rank": 4, "name": "พนักงานหน้างานและ Smart Butler (Staff)", "role": "ผู้ให้บริการหน้างาน", "responsibility": "รับตารางงาน สแกน QR Code ตรวจรับนักท่องเที่ยวแบบไร้รอยต่อ" }
+            ],
+            "timeline": [
+              { "topic": "ระยะที่ 1: Proof of Concept เกาะหลีเป๊ะ (0-1 ปี)", "stakeholders": "มูลนิธิฯ, สตูล Sandbox", "timeframe": "ปีที่ 1" },
+              { "topic": "ระยะที่ 2: ขยายผลระดับประเทศและเปิดตัว Production (1-2 ปี)", "stakeholders": "ผู้ประกอบการ 10,000 ราย, ภาครัฐ", "timeframe": "ปีที่ 1 - 2" },
+              { "topic": "ระยะที่ 3: เติบโตยั่งยืนและขยายผลข้ามแดน (2-5 ปี)", "stakeholders": "พันธมิตรลังกาวี, กองทุนท่องเที่ยว", "timeframe": "ปีที่ 2 - 5" }
+            ],
+            "expert_analysis": {
+              "business": "มีโครงสร้างรายได้หลากหลาย (Micro-transaction fee, Subscription, Add-on Telemed) ช่วยกระจายความเสี่ยง",
+              "legal": "เตรียมความพร้อม Compliance Risk 8 ฉบับ (PDPA, Cyber Act, e-Payment, Tourism Act ฯลฯ)",
+              "investor": "ตั้งเป้าหมายกองทุนหมุนเวียนเพื่อความยั่งยืน ไม่ต้องพึ่งพางบประมาณรัฐในระยะยาว",
+              "it": "ใช้แนวคิด Content-to-Commerce และ AI Travel Companion เพื่อดึงดูดผู้ใช้งานอย่างต่อเนื่อง",
+              "strategy": "แก้ปัญหาจุดอ่อนเรื่องการแข่งขันกับ OTA ต่างชาติ ด้วยจุดแข็งอธิปไตยข้อมูลและความปลอดภัย SOS",
+              "economics": "ช่วยลดการเสียค่าธรรมเนียมให้แพลตฟอร์มต่างชาติ และกระจายรายได้สู่ผู้ประกอบการฐานราก",
+              "recommendations": "ควรเร่งสร้างทีมอบรม Onboarding ประจำพื้นที่เพื่อช่วยผู้ประกอบการชุมชนปรับตัวสู่ดิจิทัล"
+            },
+            "categorized_key_points": {
+              "people": ["นักท่องเที่ยวเป้าหมาย 1,000,000 คน/ปี", "ผู้ประกอบการ 10,000 ราย"],
+              "agencies": ["วุฒิสภา", "สภาอุตฯ ท่องเที่ยว", "สคส. (PDPC)", "ธปท.", "สพฉ."],
+              "budget": ["งบประมาณเริ่มต้น 50 ล้านบาท", "รายได้ค่าธรรมเนียมธุรกรรมขั้นต่ำ"],
+              "timeline": ["แผนเติบโต 3 ระยะ (0-1 ปี, 1-2 ปี, 2-5 ปี)"],
+              "stakeholders": ["นักท่องเที่ยว B2C", "ร้านค้า B2B", "ภาครัฐ B2G", "พนักงาน Staff"],
+              "constraints": ["การแข่งขันที่รุนแรงจาก OTA ต่างชาติเดิม"],
+              "advantages": ["เป็นแพลตฟอร์มของคนไทย ปลอดภัย รู้ใจด้วย AI"],
+              "opportunities": ["สร้างโมเดลความยั่งยืนทางการเงิน Self-Sustaining Model"]
+            },
+            "file_size": "4.2 MB"
+          }
+        ];
+
+        // State Management with LocalStorage
+        let documentsList = [];
+        let systemLogs = [];
+        let pendingDeleteDocId = null;
+        let pendingDownloadDocId = null;
+        let lastAiResponseData = null;
+        let searchTimer = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initData();
+            startClock();
+            renderApp();
+        });
+
+        function initData() {
+            const savedDocs = localStorage.getItem('benjarong_docs');
+            if (savedDocs) {
+                try { documentsList = JSON.parse(savedDocs); } catch(e) { documentsList = INITIAL_DOCUMENTS; }
+            } else {
+                documentsList = INITIAL_DOCUMENTS;
+                saveDocsToStorage();
+            }
+
+            const savedLogs = localStorage.getItem('benjarong_logs');
+            if (savedLogs) {
+                try { systemLogs = JSON.parse(savedLogs); } catch(e) { initDefaultLogs(); }
+            } else {
+                initDefaultLogs();
+            }
+        }
+
+        function initDefaultLogs() {
+            systemLogs = [
+                { id: "log-001", timestamp: "2026-08-20 13:22:13", action: "SYSTEM_INIT", details: "เปิดใช้งานระบบ Benjarong iDoc Standalone Version บน GitHub Pages", user: "System Admin", status: "SUCCESS" },
+                { id: "log-002", timestamp: "2026-08-20 13:22:14", action: "ANALYZE_SUMMARY", details: "วิเคราะห์สรุปและจัดหมวดหมู่เอกสารทั้ง 7 ฉบับเสร็จสมบูรณ์", user: "AI Engine", status: "SUCCESS" }
+            ];
+            saveLogsToStorage();
+        }
+
+        function saveDocsToStorage() {
+            localStorage.setItem('benjarong_docs', JSON.stringify(documentsList));
+        }
+
+        function saveLogsToStorage() {
+            localStorage.setItem('benjarong_logs', JSON.stringify(systemLogs));
+        }
+
+        function addLog(action, details) {
+            const now = new Date();
+            const nowStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+            systemLogs.unshift({
+                id: `log-${systemLogs.length + 1}`,
+                timestamp: nowStr,
+                action: action,
+                details: details,
+                user: "Client User",
+                status: "SUCCESS"
+            });
+            saveLogsToStorage();
+            renderLogsTable();
+        }
+
+        function startClock() {
+            function updateClock() {
+                const now = new Date();
+                const str = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('liveClock').innerText = str;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function resetSystemState() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('docTitleFilter').value = '';
+            document.getElementById('statCategoryDropdown').value = '';
+            switchTab('docs');
+            renderApp();
+            addLog("SYSTEM_RESET", "รีเซ็ตตัวกรองและล้างค่ากลับสู่หน้าเริ่มต้น");
+        }
+
+        function switchTab(tabName) {
+            ['docs', 'ai', 'logs', 'exports'].forEach(t => {
+                const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                const sec = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if (t === tabName) {
+                    sec.classList.remove('hidden');
+                    btn.classList.add('text-blue-900', 'border-blue-800');
+                    btn.classList.remove('text-slate-600', 'border-transparent');
+                } else {
+                    sec.classList.add('hidden');
+                    btn.classList.remove('text-blue-900', 'border-blue-800');
+                    btn.classList.add('text-slate-600', 'border-transparent');
+                }
+            });
+
+            if (tabName === 'logs') renderLogsTable();
+            if (tabName === 'exports') renderExportDocSelectors();
+        }
+
+        function getFilteredDocuments() {
+            const q = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
+            const cat = document.getElementById('categoryFilter')?.value || '';
+            const titleFilter = document.getElementById('docTitleFilter')?.value || '';
+
+            return documentsList.filter(doc => {
+                const docCats = doc.categories || [doc.category];
+                if (cat && !docCats.includes(cat)) return false;
+                if (titleFilter && doc.title !== titleFilter) return false;
+                if (q) {
+                    const text = `${doc.title} ${doc.summary} ${doc.source_agency} ${docCats.join(' ')}`.toLowerCase();
+                    return q.split(' ').every(kw => text.includes(kw));
+                }
+                return true;
+            });
+        }
+
+        function renderApp() {
+            const filteredDocs = getFilteredDocuments();
+            renderDocumentsGrid(filteredDocs);
+            updateDashboardStats();
+            updateCategoryFilterDropdown();
+            updateDocTitleFilterDropdown();
+            renderExportDocSelectors();
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('statTotalDocs').innerText = documentsList.length;
+
+            const catCounts = {};
+            documentsList.forEach(d => {
+                (d.categories || [d.category]).forEach(c => { if(c) catCounts[c] = (catCounts[c] || 0) + 1; });
+            });
+
+            const uniqueCats = Object.keys(catCounts);
+            document.getElementById('statCategories').innerText = uniqueCats.length;
+
+            const statDropdown = document.getElementById('statCategoryDropdown');
+            if (statDropdown) {
+                const current = statDropdown.value;
+                statDropdown.innerHTML = '<option value="">-- เลือกดูจำนวนเอกสารแยกตามหมวดหมู่ --</option>';
+                uniqueCats.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.innerText = `${c} (${catCounts[c]} เอกสาร)`;
+                    if (c === current) opt.selected = true;
+                    statDropdown.appendChild(opt);
+                });
+            }
+        }
+
+        function onDashboardCategorySelect(catVal) {
+            document.getElementById('categoryFilter').value = catVal;
+            onCategoryFilterChange();
+        }
+
+        function updateCategoryFilterDropdown() {
+            const dropdown = document.getElementById('categoryFilter');
+            if (!dropdown) return;
+
+            const current = dropdown.value;
+            const catCounts = {};
+
+            documentsList.forEach(d => {
+                (d.categories || [d.category]).forEach(c => { if(c) catCounts[c] = (catCounts[c] || 0) + 1; });
+            });
+
+            dropdown.innerHTML = '<option value="">-- แสดงทุกหมวดหมู่ --</option>';
+            Object.keys(catCounts).forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.innerText = `${c} (${catCounts[c]})`;
+                if (c === current) opt.selected = true;
+                dropdown.appendChild(opt);
+            });
+        }
+
+        function onCategoryFilterChange() {
+            updateDocTitleFilterDropdown();
+            document.getElementById('docTitleFilter').value = '';
+            renderApp();
+        }
+
+        function updateDocTitleFilterDropdown() {
+            const dropdown = document.getElementById('docTitleFilter');
+            if (!dropdown) return;
+
+            const selectedCat = document.getElementById('categoryFilter')?.value || '';
+            const current = dropdown.value;
+
+            dropdown.innerHTML = '<option value="">-- แสดงทุกชื่อเอกสาร --</option>';
+            documentsList.forEach(d => {
+                const cats = d.categories || [d.category];
+                if (!selectedCat || cats.includes(selectedCat)) {
+                    const opt = document.createElement('option');
+                    opt.value = d.title;
+                    opt.innerText = d.title;
+                    if (d.title === current) opt.selected = true;
+                    dropdown.appendChild(opt);
+                }
+            });
+        }
+
+        function renderDocumentsGrid(docs) {
+            const container = document.getElementById('docsGrid');
+            if (!container) return;
+
+            if (docs.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-12 text-center rounded-xl border border-slate-200 text-slate-500">
+                        <i class="fa-solid fa-folder-open text-4xl mb-3 text-slate-300"></i>
+                        <p class="font-semibold text-sm">ไม่พบเอกสารตรงกับเงื่อนไขการสืบค้น</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = docs.map(d => {
+                const cats = d.categories || [d.category];
+                const catBadges = cats.map(c => `<span class="text-xs font-semibold px-2.5 py-0.5 rounded-full border bg-blue-50 text-blue-800 border-blue-200"><i class="fa-solid fa-tag text-[10px]"></i> ${c}</span>`).join(' ');
+
+                return `
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4 hover:shadow-md transition">
+                        <div class="flex flex-col md:flex-row justify-between md:items-start gap-3 border-b border-slate-100 pb-3">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                    ${catBadges}
+                                    <button onclick="openDocPreview('${d.id}')" class="text-[11px] font-mono text-slate-500 hover:text-blue-700 bg-slate-100 px-2 py-0.5 rounded transition">
+                                        <i class="fa-solid fa-file-pdf text-rose-500"></i> ${d.filename} <i class="fa-solid fa-eye text-blue-600 ml-1"></i>
+                                    </button>
+                                </div>
+                                <h3 onclick="openDocPreview('${d.id}')" class="text-base font-bold text-slate-900 hover:text-blue-700 cursor-pointer transition flex items-center gap-2">
+                                    <span>${d.title}</span>
+                                    <span class="text-xs bg-blue-50 text-blue-700 font-normal px-2 py-0.5 rounded-full border border-blue-200"><i class="fa-solid fa-expand text-[10px]"></i> Preview</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    <i class="fa-solid fa-building-columns text-slate-400"></i> แหล่งที่มา: <span class="font-medium text-slate-700">${d.source_agency}</span>
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col md:items-end gap-2">
+                                <div class="text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1.5 whitespace-nowrap">
+                                    <i class="fa-solid fa-clock-check text-emerald-600"></i>
+                                    <span>วิเคราะห์เมื่อ: ${d.analyzed_at}</span>
+                                </div>
+                                <button onclick="openDownloadChecklistModal('${d.id}')" class="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5 w-full md:w-auto justify-center">
+                                    <i class="fa-solid fa-download"></i> ดาวน์โหลดเอกสาร (Download)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="text-xs font-bold text-slate-700 mb-1 uppercase"><i class="fa-solid fa-align-left text-blue-600"></i> สรุปสาระสำคัญ (Analyze Summary):</div>
+                            <p class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                ${d.summary}
+                            </p>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                            <div class="flex gap-2">
+                                <button onclick="openDocPreview('${d.id}')" class="text-xs font-semibold text-indigo-700 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-eye"></i> เปิดดูเอกสาร Preview
+                                </button>
+                            </div>
+                            <button onclick="openDeleteModal('${d.id}', '${d.title}')" class="text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                                <i class="fa-solid fa-trash"></i> ลบเอกสาร (Remove)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function debounceSearch() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(renderApp, 300);
+        }
+
+        function openDocPreview(docId) {
+            const doc = documentsList.find(d => d.id === docId);
+            if (!doc) return;
+
+            document.getElementById('previewDocTitle').innerText = doc.title;
+            document.getElementById('previewDocSub').innerText = `แหล่งที่มา: ${doc.source_agency} | ไฟล์: ${doc.filename}`;
+            document.getElementById('previewTimestamp').innerText = `วิเคราะห์เมื่อ: ${doc.analyzed_at}`;
+
+            document.getElementById('previewHeaderDownloadBtn').onclick = () => { closeDocPreviewModal(); openDownloadChecklistModal(doc.id); };
+            document.getElementById('previewFooterDownloadBtn').onclick = () => { closeDocPreviewModal(); openDownloadChecklistModal(doc.id); };
+
+            const cats = doc.categories || [doc.category];
+            document.getElementById('previewCatBadges').innerHTML = cats.map(c => `<span class="text-xs bg-amber-400 text-slate-950 font-bold px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-tag"></i> ${c}</span>`).join(' ');
+
+            const ea = doc.expert_analysis || {};
+
+            const stakeholdersHtml = (doc.stakeholders || []).map(s => `
+                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
+                    <span class="font-bold text-blue-900">${s.rank || ''}. ${s.name}</span>
+                    <span class="text-slate-500">(${s.role})</span>
+                    <p class="text-slate-600 mt-1">${s.responsibility}</p>
+                </div>
+            `).join('');
+
+            const timelineHtml = (doc.timeline || []).map(t => `
+                <tr class="hover:bg-slate-50 text-xs">
+                    <td class="p-2 border border-slate-200 font-semibold text-slate-800">${t.topic}</td>
+                    <td class="p-2 border border-slate-200 text-slate-600">${t.stakeholders}</td>
+                    <td class="p-2 border border-slate-200 font-mono text-emerald-700 font-bold">${t.timeframe}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('previewModalBody').innerHTML = `
+                <div class="space-y-5">
+                    <div class="border-b border-slate-200 pb-4 space-y-4">
+                        <div class="text-sm font-bold text-blue-950 uppercase border-b-2 border-blue-800 pb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-blue-700"></i> Part 1: ผลการวิเคราะห์สรุปเชิงลึก (Analysis Summary & Expert Panel)
+                        </div>
+
+                        <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-950 text-xs mb-1"><i class="fa-solid fa-align-left text-blue-700"></i> สรุปสาระสำคัญ (Analyze Summary):</h4>
+                            <p class="text-slate-800 leading-relaxed text-xs">${doc.summary}</p>
+                        </div>
+
+                        ${doc.stakeholders && doc.stakeholders.length > 0 ? `
+                            <div class="space-y-2">
+                                <h4 class="font-bold text-slate-900 text-xs"><i class="fa-solid fa-users-gear text-blue-700"></i> ผู้มีส่วนเกี่ยวข้องและบทบาทหน้าที่:</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${stakeholdersHtml}</div>
+                            </div>
+                        ` : ''}
+
+                        ${doc.timeline && doc.timeline.length > 0 ? `
+                            <div class="space-y-2">
+                                <h4 class="font-bold text-slate-900 text-xs"><i class="fa-solid fa-calendar-check text-emerald-700"></i> กรอบระยะเวลาและผู้รับผิดชอบ:</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse bg-white rounded-lg border border-slate-200">
+                                        <thead>
+                                            <tr class="bg-slate-100 text-slate-700 font-bold text-xs">
+                                                <th class="p-2 border border-slate-200">เรื่อง / กิจกรรม</th>
+                                                <th class="p-2 border border-slate-200">ผู้มีส่วนเกี่ยวข้อง</th>
+                                                <th class="p-2 border border-slate-200">กรอบเวลา</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>${timelineHtml}</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${ea.business ? `
+                            <div class="bg-indigo-50/70 p-4 rounded-xl border border-indigo-200 space-y-3">
+                                <h4 class="font-bold text-indigo-950 text-xs border-b border-indigo-200 pb-2"><i class="fa-solid fa-user-tie text-indigo-700"></i> มุมมองวิเคราะห์โดยผู้เชี่ยวชาญ 6 ด้าน:</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-blue-900">💼 ด้านธุรกิจ:</span> <p class="mt-1">${ea.business}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-purple-900">⚖️ ด้านกฎหมาย:</span> <p class="mt-1">${ea.legal}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-emerald-900">💰 ด้านการลงทุน:</span> <p class="mt-1">${ea.investor}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-sky-900">💻 ด้านไอที:</span> <p class="mt-1">${ea.it}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-amber-900">🎯 ด้านกลยุทธ์:</span> <p class="mt-1">${ea.strategy}</p></div>
+                                    <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm"><span class="font-bold text-teal-900">📊 ด้านเศรษฐศาสตร์:</span> <p class="mt-1">${ea.economics}</p></div>
+                                </div>
+                                ${ea.recommendations ? `<div class="bg-amber-100 p-2.5 rounded-lg border border-amber-300 font-medium text-xs">💡 <strong>ข้อแนะนำเพิ่มเติม:</strong> ${ea.recommendations}</div>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="text-sm font-bold text-emerald-950 uppercase border-b-2 border-emerald-700 pb-1 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-rose-600"></i> Part 2: เนื้อหาไฟล์ต้นฉบับ (Original File Content Preview)</span>
+                            <span class="text-xs text-slate-500 font-mono font-normal">ไฟล์: ${doc.filename}</span>
+                        </div>
+
+                        <div class="bg-slate-900 text-slate-200 p-4 rounded-xl border border-slate-800 font-mono text-xs leading-relaxed max-h-72 overflow-y-auto space-y-2">
+                            <p class="text-emerald-400 font-bold">--- ORIGINAL DOCUMENT DATA STREAM ---</p>
+                            <p class="text-slate-300">Document Title: ${doc.title}</p>
+                            <p class="text-slate-300">Source Agency: ${doc.source_agency}</p>
+                            <p class="text-slate-300">File Size: ${doc.file_size || 'N/A'}</p>
+                            <p class="text-slate-300">Categories: ${(doc.categories || []).join(' | ')}</p>
+                            <hr class="border-slate-800 my-2">
+                            <p class="text-slate-100 whitespace-pre-line">${doc.summary}</p>
+                            <p class="text-emerald-400 font-bold mt-2">--- END OF PREVIEW STREAM ---</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('docPreviewModal').classList.remove('hidden');
+            document.getElementById('docPreviewModal').classList.add('flex');
+        }
+
+        function closeDocPreviewModal() {
+            document.getElementById('docPreviewModal').classList.add('hidden');
+            document.getElementById('docPreviewModal').classList.remove('flex');
+        }
+
+        function openDownloadChecklistModal(docId) {
+            const doc = documentsList.find(d => d.id === docId);
+            if (!doc) return;
+
+            pendingDownloadDocId = docId;
+            document.getElementById('downloadTargetDocTitle').innerText = `${doc.title} (${doc.filename})`;
+
+            document.getElementById('downloadChecklistModal').classList.remove('hidden');
+            document.getElementById('downloadChecklistModal').classList.add('flex');
+        }
+
+        function closeDownloadChecklistModal() {
+            pendingDownloadDocId = null;
+            document.getElementById('downloadChecklistModal').classList.add('hidden');
+            document.getElementById('downloadChecklistModal').classList.remove('flex');
+        }
+
+        function executeClientCustomDownloadPackage() {
+            if (!pendingDownloadDocId) return;
+
+            const doc = documentsList.find(d => d.id === pendingDownloadDocId);
+            if (!doc) return;
+
+            const incSummary = document.getElementById('chkIncludeSummary').checked;
+            const incOriginal = document.getElementById('chkIncludeOriginal').checked;
+            const incRelated = document.getElementById('chkIncludeRelated').checked;
+
+            let out = [];
+            out.push("==========================================================================");
+            out.push("               BENJARONG iDOC - CUSTOM DOCUMENT PACKAGE                   ");
+            out.push("==========================================================================");
+            out.push(`ชื่อเอกสาร: ${doc.title}`);
+            out.push(`ไฟล์: ${doc.filename}`);
+            out.push(`หมวดหมู่: ${(doc.categories || []).join(', ')}`);
+            out.push(`แหล่งที่มา: ${doc.source_agency}`);
+            out.push("--------------------------------------------------------------------------\n");
+
+            if (incSummary) {
+                out.push("[1] สรุปผลการวิเคราะห์เชิงลึก:");
+                out.push(`วิเคราะห์เมื่อ: ${doc.analyzed_at}`);
+                out.push(`สรุป: ${doc.summary}\n`);
+            }
+
+            if (incOriginal) {
+                out.push("[2] เนื้อหาเอกสารหลักต้นฉบับ:");
+                out.push(`ชื่อไฟล์: ${doc.filename} (ขนาด: ${doc.file_size || 'N/A'})\n`);
+            }
+
+            if (incRelated) {
+                const cats = new Set(doc.categories || []);
+                const related = documentsList.filter(d => d.id !== doc.id && (d.categories || []).some(c => cats.has(c)));
+                out.push(`[3] รายการเอกสารที่เกี่ยวข้องในหมวดหมู่เดียวกัน (${related.length} ฉบับ):`);
+                related.forEach(r => out.push(` • ${r.title} [${r.filename}]`));
+            }
+
+            downloadFileBlob(out.join('\n'), `Benjarong_Package_${doc.id}.txt`, 'text/plain;charset=utf-8');
+            closeDownloadChecklistModal();
+            addLog("DOWNLOAD_CUSTOM", `ดาวน์โหลดแพ็กเกจเอกสาร '${doc.filename}'`);
+        }
+
+        function downloadFileBlob(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function openDeleteModal(docId, title) {
+            pendingDeleteDocId = docId;
+            document.getElementById('deleteModalTargetTitle').innerText = title;
+            const btn = document.getElementById('btnConfirmDeleteExec');
+            btn.onclick = () => executeDeleteDocumentClient(docId);
+
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+            document.getElementById('deleteConfirmModal').classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            pendingDeleteDocId = null;
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+            document.getElementById('deleteConfirmModal').classList.remove('flex');
+        }
+
+        function executeDeleteDocumentClient(docId) {
+            const doc = documentsList.find(d => d.id === docId);
+            if (!doc) return;
+
+            documentsList = documentsList.filter(d => d.id !== docId);
+            saveDocsToStorage();
+            closeDeleteModal();
+            renderApp();
+            addLog("REMOVE_FILE", `ลบเอกสาร '${doc.title}' (${doc.filename})`);
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+            document.getElementById('uploadModal').classList.add('flex');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadModal').classList.remove('flex');
+            document.getElementById('uploadForm').reset();
+            document.getElementById('fileNameDisplay').innerText = '';
+        }
+
+        function handleUploadSubmitClient(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files[0]) return;
+
+            const file = fileInput.files[0];
+            const now = new Date();
+            const nowStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+
+            const newDoc = {
+                id: `doc-${documentsList.length + 1}`,
+                filename: file.name,
+                title: `เอกสารนำเข้า: ${file.name.replace('_', ' ').replace(/\.[^/.]+$/, "")}`,
+                categories: ["ยุทธศาสตร์และข้อเสนอพันธมิตร (Strategy & Partnership)"],
+                source_agency: "ไฟล์นำเข้าโดยผู้ใช้ (Uploaded User File)",
+                analyzed_at: nowStr,
+                summary: `ได้รับการประมวลผลและจัดหมวดหมู่อัตโนมัติเมื่อ ${nowStr} พร้อมใช้งานในคลังข้อมูล`,
+                file_size: `${(file.size / 1024).toFixed(1)} KB`
+            };
+
+            documentsList.push(newDoc);
+            saveDocsToStorage();
+            closeUploadModal();
+            renderApp();
+            addLog("ADD_FILE", `นำเข้าไฟล์ใหม่ '${file.name}'`);
+        }
+
+        function setPrompt(txt) {
+            document.getElementById('aiPromptInput').value = txt;
+        }
+
+        function submitAiQueryClient() {
+            const prompt = document.getElementById('aiPromptInput').value.trim();
+            if (!prompt) return;
+
+            const now = new Date();
+            const nowStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+
+            const pLower = prompt.toLowerCase();
+            const topMatches = documentsList.filter(d => {
+                const text = `${d.title} ${d.summary} ${d.source_agency}`.toLowerCase();
+                return pLower.split(' ').some(kw => kw.length > 1 && text.includes(kw));
+            }).slice(0, 3);
+
+            const finalMatches = topMatches.length > 0 ? topMatches : documentsList.slice(0, 2);
+
+            let ans = [`**การวิเคราะห์คำตอบจากคลังข้อมูล Benjarong iDoc (ณ เวลา ${nowStr}):**\n`];
+
+            if (pLower.includes("งบ") || pLower.includes("budget")) {
+                ans.push("โครงการ Thailand Tourism DPI มีงบประมาณรวมทั้งสิ้น **50,000,000 บาท** โดยเน้นการลงทุนใน Core Technology (Hardware, Software, Cloud) ถึง **62.53% (31.25 ล้านบาท)**:");
+                ans.push("- **หมวด Hardware & Infra**: 11,800,000 บาท (23.61%)");
+                ans.push("- **หมวด Platform & Dashboards**: 10,450,000 บาท (20.91%)");
+                ans.push("- **หมวด Cloud & AI Trip Planning**: 9,000,000 บาท (18.01%)");
+            } else if (pLower.includes("gdcc") || pLower.includes("คลาวด์")) {
+                ans.push("แพลตฟอร์ม Tourism DPI จัดเก็บข้อมูลบน **Government Cloud (GDCC) 100%** ปกป้องอธิปไตยทางข้อมูล (Data Sovereignty) และสอดคล้องตาม PDPA");
+                ans.push("- **ทรัพยากร GDCC ที่ขอสนับสนุน**: 250-280 vCPU, RAM 500-550 GB, Storage 43 TB");
+            } else {
+                ans.push(`จากการวิเคราะห์คำถาม '${prompt}' ระบบได้สกัดข้อมูลสำคัญจากเอกสารอ้างอิง ดังนี้:`);
+                finalMatches.forEach(m => ans.push(`• **${m.title}**: ${m.summary.slice(0, 160)}...`));
+            }
+
+            ans.push("\n📌 **แหล่งอ้างอิงข้อมูล (Source Citations):**");
+            finalMatches.forEach(m => ans.push(`- [${m.filename}] ${m.title} (${m.source_agency})`));
+
+            const responseText = ans.join('\n');
+            document.getElementById('aiResponseBox').innerText = responseText;
+
+            lastAiResponseData = { prompt: prompt, response: responseText, citations: finalMatches, timestamp: nowStr };
+
+            document.getElementById('aiExportBar').classList.remove('hidden');
+
+            const citationsBox = document.getElementById('aiCitationsBox');
+            const citationsContainer = document.getElementById('citationsContainer');
+            citationsBox.classList.remove('hidden');
+            citationsContainer.innerHTML = finalMatches.map(c => `
+                <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs shadow-sm space-y-1">
+                    <div class="font-bold text-blue-900 cursor-pointer hover:underline" onclick="openDocPreview('${c.id}')">${c.title}</div>
+                    <div class="text-slate-500 font-mono text-[11px]"><i class="fa-solid fa-file-pdf text-rose-500"></i> ${c.filename}</div>
+                    <div class="text-emerald-600 text-[10px] font-semibold"><i class="fa-solid fa-clock"></i> บันทึกเมื่อ: ${c.analyzed_at}</div>
+                </div>
+            `).join('');
+
+            addLog("AI_QUERY", `สอบถาม AI: '${prompt}'`);
+        }
+
+        function exportAiResponseClient(fmt) {
+            if (!lastAiResponseData) return;
+
+            const content = `Benjarong iDoc - AI Query Report\n\nคำถาม: ${lastAiResponseData.prompt}\nเวลา: ${lastAiResponseData.timestamp}\n\nคำตอบ:\n${lastAiResponseData.response}`;
+            if (fmt === 'txt' || fmt === 'doc') {
+                downloadFileBlob(content, `Benjarong_AI_Query_Response.${fmt}`, 'text/plain;charset=utf-8');
+            } else {
+                window.print();
+            }
+            addLog("EXPORT_AI_QUERY", `ส่งออกคำตอบ AI เป็นไฟล์ .${fmt}`);
+        }
+
+        function renderExportDocSelectors() {
+            const container = document.getElementById('exportDocSelectorContainer');
+            if (!container) return;
+
+            container.innerHTML = documentsList.map(d => `
+                <label class="flex items-center gap-2 p-2 hover:bg-blue-50 rounded cursor-pointer transition text-xs">
+                    <input type="checkbox" value="${d.id}" class="export-doc-checkbox accent-blue-700 w-4 h-4" checked>
+                    <span class="font-semibold text-slate-800 truncate">${d.title}</span>
+                    <span class="text-[10px] text-slate-400 font-mono ml-auto">(${d.filename})</span>
+                </label>
+            `).join('');
+        }
+
+        function selectAllExportDocs(checked) {
+            document.querySelectorAll('.export-doc-checkbox').forEach(cb => cb.checked = checked);
+        }
+
+        function exportCustomClient(fmt) {
+            const cbs = document.querySelectorAll('.export-doc-checkbox:checked');
+            const selectedIds = Array.from(cbs).map(cb => cb.value);
+            if (selectedIds.length === 0) {
+                alert('กรุณาเลือกเอกสารอย่างน้อย 1 รายการ');
+                return;
+            }
+
+            const docs = documentsList.filter(d => selectedIds.includes(d.id));
+            let out = [];
+            out.push("==========================================================================");
+            out.push("               BENJARONG iDOC - EXECUTIVE CUSTOM REPORT                   ");
+            out.push("==========================================================================");
+            out.push(`เอกสารที่เลือก: ${docs.length} รายการ\n`);
+
+            docs.forEach((d, i) => {
+                out.push(`${i+1}. ${d.title} [${d.filename}]`);
+                out.push(`   หมวดหมู่: ${(d.categories || []).join(', ')}`);
+                out.push(`   แหล่งที่มา: ${d.source_agency} | วิเคราะห์เมื่อ: ${d.analyzed_at}`);
+                out.push(`   สรุป: ${d.summary}\n`);
+            });
+
+            if (fmt === 'pdf') {
+                window.print();
+            } else {
+                downloadFileBlob(out.join('\n'), `Benjarong_Custom_Report.${fmt}`, 'text/plain;charset=utf-8');
+            }
+            addLog("EXPORT_REPORT", `ส่งออกรายงานแบบกำหนดเอง (${docs.length} เอกสาร) เป็นไฟล์ .${fmt}`);
+        }
+
+        function renderLogsTable() {
+            const tbody = document.getElementById('logsTbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = systemLogs.map(l => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-3 font-mono text-slate-500 whitespace-nowrap">${l.timestamp}</td>
+                    <td class="p-3 font-semibold text-blue-900">${l.action}</td>
+                    <td class="p-3 text-slate-700">${l.details}</td>
+                    <td class="p-3 text-slate-500">${l.user}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2.5 py-0.5 text-[10px] font-bold rounded ${l.status === 'SUCCESS' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${l.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function clearSystemLogsClient() {
+            if (!confirm('คุณต้องการล้างบันทึกกิจกรรมทั้งหมดหรือไม่?')) return;
+            initDefaultLogs();
+            renderLogsTable();
+        }
+    
